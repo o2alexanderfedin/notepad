@@ -1,0 +1,75 @@
+# electron-builder configuration for macOS packaging
+# Generates DMG and PKG installers for distribution
+# See: https://www.electron.build/configuration/configuration
+
+# Application identity
+appId: com.notepad.app
+productName: Notepad
+copyright: Copyright (c) 2024
+
+# Directory configuration
+directories:
+  # Build resources directory (icons, entitlements, etc.)
+  buildResources: build
+  # Output directory for built installers
+  output: dist
+
+# macOS-specific configuration
+mac:
+  # Application category for macOS App Store categorization
+  category: public.app-category.productivity
+
+  # Hardened runtime is required for notarization (macOS 10.15+)
+  hardenedRuntime: true
+
+  # Disable local Gatekeeper assessment (can cause issues on build machine)
+  gatekeeperAssess: false
+
+  # Entitlements files for hardened runtime
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+
+  # Application icon (converted from PNG to ICNS format)
+  icon: build/icon.icns
+
+  # Build targets - universal binaries for Intel and Apple Silicon
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: pkg
+      arch:
+        - x64
+        - arm64
+
+# DMG installer configuration
+dmg:
+  # Window title includes product name and version
+  title: "${productName} ${version}"
+
+  # Icon shown in DMG window (uses app icon by default if not specified)
+  # Uncomment when build/icon.icns is available:
+  # icon: build/icon.icns
+
+  # DMG window dimensions
+  window:
+    width: 540
+    height: 380
+
+# PKG installer configuration
+pkg:
+  # Installation location for the application
+  installLocation: /Applications
+
+# Notarization configuration (uses environment variables)
+# Set these environment variables for notarization:
+#   APPLE_ID - Your Apple ID email
+#   APPLE_APP_SPECIFIC_PASSWORD - App-specific password
+#   APPLE_TEAM_ID - 10-character Team ID
+afterSign: null
+
+# Code signing (uses environment variables)
+# Set these environment variables for code signing:
+#   CSC_LINK - Path to Developer ID certificate (.p12)
+#   CSC_KEY_PASSWORD - Certificate password

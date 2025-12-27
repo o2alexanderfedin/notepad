@@ -5,6 +5,16 @@ node_modules/
 dist/
 out/
 
+# Installer artifacts
+*.dmg
+*.exe
+*.deb
+*.rpm
+*.AppImage
+*.snap
+*.msi
+*.pkg
+
 # IDE
 .vscode/
 .idea/

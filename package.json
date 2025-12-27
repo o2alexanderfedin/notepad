@@ -9,6 +9,7 @@
     "dev:electron": "electron --loader tsx src/electron/main.ts",
     "build:browser": "vite build",
     "build:electron": "electron-builder",
+    "build:mac": "electron-builder --mac",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

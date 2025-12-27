@@ -8,7 +8,7 @@ import {
   FileSystemAdapter,
   registerAdapter,
   isFileSystemAccessSupported
-} from '../shared/file-system-abstraction.js';
+} from '../shared/file-system-abstraction.ts';
 
 /**
  * File type configurations for the file picker dialogs.
