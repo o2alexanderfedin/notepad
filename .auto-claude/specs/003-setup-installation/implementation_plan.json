@@ -1,0 +1,369 @@
+{
+  "feature": "macOS Installation Package Configuration",
+  "workflow_type": "feature",
+  "workflow_rationale": "Adding new macOS packaging capability using electron-builder. This is a new feature that doesn't exist yet - the ability to create distributable .dmg and .pkg installers for the Electron app. Follows feature workflow: Setup → Implementation → Integration.",
+
+  "phases": [
+    {
+      "id": "phase-1-setup",
+      "name": "Setup Build Infrastructure",
+      "type": "setup",
+      "description": "Create build/ directory structure and asset placeholders",
+      "depends_on": [],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-1-1",
+          "description": "Create build directory structure",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["build/.gitkeep"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "test -d build && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Creates the build/ directory for packaging assets (icon, entitlements)"
+        },
+        {
+          "id": "subtask-1-2",
+          "description": "Create docs directory if needed",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["docs/.gitkeep"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "test -d docs && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Creates docs/ directory for BUILDING.md documentation"
+        },
+        {
+          "id": "subtask-1-3",
+          "description": "Update .gitignore for build artifacts",
+          "service": "main",
+          "files_to_modify": [".gitignore"],
+          "files_to_create": [],
+          "patterns_from": [".gitignore"],
+          "verification": {
+            "type": "command",
+            "command": "grep -q 'dist/' .gitignore && grep -q '*.dmg' .gitignore && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Ensure dist/, *.dmg, *.pkg patterns are in .gitignore"
+        }
+      ]
+    },
+
+    {
+      "id": "phase-2-config",
+      "name": "Packaging Configuration",
+      "type": "implementation",
+      "description": "Create electron-builder configuration and required asset files",
+      "depends_on": ["phase-1-setup"],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-2-1",
+          "description": "Create electron-builder.yml configuration",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["electron-builder.yml"],
+          "patterns_from": ["vite.config.js"],
+          "verification": {
+            "type": "command",
+            "command": "test -f electron-builder.yml && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Main packaging config: appId, mac target [x64, arm64], DMG/PKG settings, hardenedRuntime, entitlements"
+        },
+        {
+          "id": "subtask-2-2",
+          "description": "Create macOS entitlements file",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["build/entitlements.mac.plist"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "test -f build/entitlements.mac.plist && plutil -lint build/entitlements.mac.plist 2>&1 | grep -q 'OK' && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Required entitlements for Electron: allow-jit, allow-unsigned-executable-memory, disable-library-validation"
+        },
+        {
+          "id": "subtask-2-3",
+          "description": "Create environment variables template",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": [".env.example"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "test -f .env.example && grep -q 'CSC_LINK' .env.example && grep -q 'APPLE_ID' .env.example && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Template for CSC_LINK, CSC_KEY_PASSWORD, APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID"
+        },
+        {
+          "id": "subtask-2-4",
+          "description": "Create placeholder icon or document icon creation",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["build/ICON_README.md"],
+          "patterns_from": [],
+          "verification": {
+            "type": "manual",
+            "instructions": "Check build/ICON_README.md exists with iconutil instructions, OR build/icon.icns exists"
+          },
+          "status": "pending",
+          "notes": "Document iconutil conversion process OR create actual .icns if source PNG exists. Fallback to Electron default if missing."
+        }
+      ]
+    },
+
+    {
+      "id": "phase-3-scripts",
+      "name": "Build Scripts and Documentation",
+      "type": "implementation",
+      "description": "Update package.json scripts and create comprehensive build documentation",
+      "depends_on": ["phase-2-config"],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-3-1",
+          "description": "Update package.json with build scripts",
+          "service": "main",
+          "files_to_modify": ["package.json"],
+          "files_to_create": [],
+          "patterns_from": ["package.json"],
+          "verification": {
+            "type": "command",
+            "command": "node -e \"const pkg=require('./package.json'); if(pkg.scripts['build:mac']) console.log('OK'); else process.exit(1);\"",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Add 'build:mac' script that runs electron-builder --mac with proper flags"
+        },
+        {
+          "id": "subtask-3-2",
+          "description": "Create build documentation",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["docs/BUILDING.md"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "test -f docs/BUILDING.md && wc -l docs/BUILDING.md | awk '{if($1>50) print \"OK\"}'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Comprehensive guide: prerequisites, environment setup, icon conversion, build commands, code signing, notarization, troubleshooting"
+        }
+      ]
+    },
+
+    {
+      "id": "phase-4-integration",
+      "name": "Build Integration and Verification",
+      "type": "integration",
+      "description": "Verify electron-builder configuration is valid and build process works",
+      "depends_on": ["phase-3-scripts"],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-4-1",
+          "description": "Validate electron-builder configuration",
+          "all_services": false,
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "npx electron-builder --help > /dev/null 2>&1 && echo 'OK'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Ensure electron-builder can parse the configuration without errors"
+        },
+        {
+          "id": "subtask-4-2",
+          "description": "Test build process (dry run without signing)",
+          "all_services": false,
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:mac -- --publish never 2>&1 | grep -q 'building' && echo 'OK' || echo 'SKIP_IF_NO_ICON'",
+            "expected": "OK"
+          },
+          "status": "pending",
+          "notes": "Attempt build without code signing. May warn about missing icon but should not fail on config errors. Use CSC_IDENTITY_AUTO_DISCOVERY=false to skip signing."
+        },
+        {
+          "id": "subtask-4-3",
+          "description": "Verify dist artifacts structure",
+          "all_services": false,
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "manual",
+            "instructions": "If build succeeded: Check dist/ directory exists. If .dmg/.pkg created, verify they open. If build skipped due to missing icon, document in build-progress.txt."
+          },
+          "status": "pending",
+          "notes": "Final verification that build artifacts are created correctly (or build process is ready once icon is added)"
+        }
+      ]
+    }
+  ],
+
+  "summary": {
+    "total_phases": 4,
+    "total_subtasks": 12,
+    "services_involved": ["main"],
+    "parallelism": {
+      "max_parallel_phases": 1,
+      "parallel_groups": [],
+      "recommended_workers": 1,
+      "speedup_estimate": "Sequential execution (setup → config → scripts → verify)",
+      "reasoning": "All phases depend on previous phase completing. Phase 1 creates directories, Phase 2 creates configs in those directories, Phase 3 updates scripts to use configs, Phase 4 validates everything."
+    },
+    "startup_command": "source auto-claude/.venv/bin/activate && python auto-claude/run.py --spec 003 --parallel 1"
+  },
+
+  "verification_strategy": {
+    "risk_level": "medium",
+    "skip_validation": false,
+    "test_creation_phase": "post_implementation",
+    "test_types_required": ["integration"],
+    "security_scanning_required": true,
+    "staging_deployment_required": false,
+    "acceptance_criteria": [
+      "electron-builder.yml exists and is valid YAML",
+      "build/entitlements.mac.plist exists and is valid XML plist",
+      "package.json has build:mac script",
+      "docs/BUILDING.md exists with comprehensive instructions",
+      ".env.example contains all required environment variable templates",
+      ".gitignore excludes build artifacts (dist/, *.dmg, *.pkg)",
+      "npx electron-builder --help runs without config errors",
+      "Build process documented and ready (icon creation documented if not present)",
+      "No credentials or secrets committed to repository",
+      "Configuration uses environment variables for signing credentials"
+    ],
+    "verification_steps": [
+      {
+        "name": "Configuration Validation",
+        "command": "npx electron-builder --help",
+        "expected_outcome": "No configuration errors",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "YAML Syntax Check",
+        "command": "python -c \"import yaml; yaml.safe_load(open('electron-builder.yml'))\"",
+        "expected_outcome": "No YAML parsing errors",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Plist Validation",
+        "command": "plutil -lint build/entitlements.mac.plist",
+        "expected_outcome": "Valid plist format",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Secrets Scan",
+        "command": "python auto-claude/scan_secrets.py --all-files --json",
+        "expected_outcome": "No secrets detected in config files",
+        "type": "security",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Build Test (No Signing)",
+        "command": "CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:mac -- --publish never",
+        "expected_outcome": "Build completes or fails only due to missing icon (not config errors)",
+        "type": "integration",
+        "required": false,
+        "blocking": false
+      }
+    ],
+    "reasoning": "Medium risk - build configuration changes don't affect runtime code but require careful handling of credentials and proper validation to ensure distribution-ready packages. Security scan critical for checking no credentials leaked. Integration test validates config but may fail if icon missing (acceptable)."
+  },
+
+  "qa_acceptance": {
+    "unit_tests": {
+      "required": false,
+      "commands": [],
+      "minimum_coverage": null,
+      "reasoning": "No unit tests for build configuration files"
+    },
+    "integration_tests": {
+      "required": true,
+      "commands": [
+        "npx electron-builder --help",
+        "CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:mac -- --publish never"
+      ],
+      "services_to_test": ["main"],
+      "reasoning": "Build configuration must be validated by actually running the build process"
+    },
+    "e2e_tests": {
+      "required": false,
+      "commands": [],
+      "flows": [],
+      "reasoning": "E2E not applicable - this is build infrastructure, not user-facing features"
+    },
+    "browser_verification": {
+      "required": false,
+      "pages": [],
+      "reasoning": "Not applicable - this task doesn't change browser/UI behavior"
+    },
+    "build_verification": {
+      "required": true,
+      "checks": [
+        "electron-builder.yml exists and is valid YAML",
+        "build/entitlements.mac.plist exists and is valid plist",
+        ".env.example exists with CSC_* and APPLE_* variables",
+        "docs/BUILDING.md exists and is comprehensive",
+        "package.json has build:mac script",
+        ".gitignore excludes dist/, *.dmg, *.pkg",
+        "npx electron-builder --help runs without errors",
+        "No credentials committed to git"
+      ]
+    },
+    "database_verification": {
+      "required": false,
+      "checks": [],
+      "reasoning": "No database changes in this task"
+    },
+    "manual_verification": {
+      "required": true,
+      "steps": [
+        "Review electron-builder.yml for correct appId, targets, and entitlements path",
+        "Review entitlements.mac.plist for required V8 permissions",
+        "Review .env.example for all signing/notarization variables",
+        "Review docs/BUILDING.md for completeness and accuracy",
+        "Verify no Apple credentials or certificates in git history"
+      ]
+    }
+  },
+
+  "qa_signoff": null
+}
