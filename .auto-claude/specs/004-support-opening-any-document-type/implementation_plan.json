@@ -1,0 +1,238 @@
+{
+  "feature": "Universal Document Opening Support",
+  "workflow_type": "simple",
+  "workflow_rationale": "Simple array reordering task in 1 file (Electron already correct). No complex dependencies, no multi-service coordination needed. Single straightforward change with clear verification.",
+
+  "phases": [
+    {
+      "id": "phase-1-implementation",
+      "name": "Reorder Browser File Type Filters",
+      "type": "implementation",
+      "description": "Move 'All Files' filter to first position in browser file picker configuration",
+      "depends_on": [],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-1-1",
+          "description": "Reorder FILE_TYPES array in browser file handler to put 'All Files' first",
+          "service": "main",
+          "files_to_modify": ["src/browser/file-system-handler.js"],
+          "files_to_create": [],
+          "patterns_from": ["src/electron/main.ts"],
+          "verification": {
+            "type": "manual",
+            "instructions": "Run 'npm run dev', open browser at http://localhost:3000, click 'Open' button, verify 'All Files' appears first in file picker filter dropdown"
+          },
+          "status": "pending",
+          "notes": "Move the 'All Files' object (lines 58-63) from last position to first position in FILE_TYPES array. Follow the pattern from Electron's FILE_FILTERS where 'All Files' is first."
+        },
+        {
+          "id": "subtask-1-2",
+          "description": "Verify Electron file picker already has correct configuration",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": ["src/electron/main.ts"],
+          "verification": {
+            "type": "manual",
+            "instructions": "Run 'npm run electron:dev', click 'Open' in Electron app, verify 'All Files' is the default filter in native dialog"
+          },
+          "status": "pending",
+          "notes": "FILE_FILTERS in src/electron/main.ts already has 'All Files' first (line 54). Just verify it works as expected. No code changes needed."
+        }
+      ]
+    },
+    {
+      "id": "phase-2-testing",
+      "name": "Edge Case Testing",
+      "type": "implementation",
+      "description": "Test opening files with uncommon/no extensions to verify universal file support",
+      "depends_on": ["phase-1-implementation"],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-2-1",
+          "description": "Test opening files with uncommon extensions and no extensions",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "e2e",
+            "steps": [
+              "Create test files: test.xyz, Dockerfile (no extension), .gitignore (hidden), test.config",
+              "In browser mode: Open each file via file picker, verify no errors, content displays",
+              "In Electron mode: Open each file via file picker, verify no errors, content displays",
+              "Check browser console for any errors or warnings"
+            ]
+          },
+          "status": "pending",
+          "notes": "Success criteria: All test files open without errors. 'All Files' filter allows selection of any file type. No console errors related to file type validation."
+        }
+      ]
+    }
+  ],
+
+  "summary": {
+    "total_phases": 2,
+    "total_subtasks": 3,
+    "services_involved": ["main"],
+    "parallelism": {
+      "max_parallel_phases": 1,
+      "parallel_groups": [],
+      "recommended_workers": 1,
+      "speedup_estimate": "N/A - sequential execution required"
+    },
+    "startup_command": "source auto-claude/.venv/bin/activate && python auto-claude/run.py --spec 004 --parallel 1"
+  },
+
+  "verification_strategy": {
+    "risk_level": "medium",
+    "skip_validation": false,
+    "test_creation_phase": "post_implementation",
+    "test_types_required": ["unit", "integration"],
+    "security_scanning_required": false,
+    "staging_deployment_required": false,
+    "acceptance_criteria": [
+      "'All Files' filter appears first in both browser and Electron file pickers",
+      "Files with uncommon extensions (.xyz, .config, .lock) open successfully",
+      "Files with no extensions (Dockerfile, Makefile, LICENSE) open successfully",
+      "Hidden files (.gitignore, .env) open successfully",
+      "No console errors when opening any file type",
+      "Existing specific file type filters still work as secondary options"
+    ],
+    "verification_steps": [
+      {
+        "name": "Browser File Picker - Filter Order",
+        "command": "npm run dev",
+        "expected_outcome": "'All Files' appears first in file picker dropdown at http://localhost:3000",
+        "type": "manual",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Electron File Dialog - Filter Order",
+        "command": "npm run electron:dev",
+        "expected_outcome": "'All Files' is default/first filter in native dialog",
+        "type": "manual",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Edge Case Testing - Uncommon Extensions",
+        "command": "Manual testing with test files",
+        "expected_outcome": "Files with .xyz, .config, .lock extensions open without errors",
+        "type": "manual",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Edge Case Testing - No Extension",
+        "command": "Manual testing with Dockerfile, Makefile, LICENSE",
+        "expected_outcome": "Files without extensions open and display content",
+        "type": "manual",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Edge Case Testing - Hidden Files",
+        "command": "Manual testing with .gitignore, .env files",
+        "expected_outcome": "Hidden files (starting with .) open successfully",
+        "type": "manual",
+        "required": true,
+        "blocking": true
+      }
+    ],
+    "reasoning": "Medium risk due to file handling changes. Requires manual verification since file picker behavior is interactive and platform-specific. No automated tests available for native dialogs."
+  },
+
+  "qa_acceptance": {
+    "unit_tests": {
+      "required": false,
+      "commands": [],
+      "minimum_coverage": null,
+      "notes": "No unit tests needed - this is a configuration change verified through manual testing"
+    },
+    "integration_tests": {
+      "required": false,
+      "commands": [],
+      "services_to_test": [],
+      "notes": "Manual integration testing via browser and Electron file pickers"
+    },
+    "e2e_tests": {
+      "required": false,
+      "commands": [],
+      "flows": [],
+      "notes": "Manual E2E testing with various file types (uncommon extensions, no extensions, hidden files)"
+    },
+    "browser_verification": {
+      "required": true,
+      "pages": [
+        {
+          "url": "http://localhost:3000",
+          "checks": [
+            "File picker opens when clicking 'Open' button",
+            "'All Files' filter appears first in dropdown",
+            "Files with any extension can be selected and opened",
+            "No console errors when opening files"
+          ]
+        }
+      ]
+    },
+    "electron_verification": {
+      "required": true,
+      "checks": [
+        "Native file dialog opens with 'All Files' as default filter",
+        "Files with uncommon/no extensions can be selected",
+        "File content displays correctly after opening",
+        "No errors in Electron console"
+      ]
+    },
+    "manual_test_cases": [
+      {
+        "name": "Open file with uncommon extension",
+        "steps": [
+          "Create test.xyz file with text content",
+          "Launch app (browser and Electron)",
+          "Click 'Open' button",
+          "Select test.xyz file",
+          "Verify file opens and content displays"
+        ],
+        "expected": "File opens without errors, content visible"
+      },
+      {
+        "name": "Open file without extension",
+        "steps": [
+          "Create Dockerfile with content",
+          "Launch app (browser and Electron)",
+          "Click 'Open' button",
+          "Select Dockerfile",
+          "Verify file opens and content displays"
+        ],
+        "expected": "File opens without errors, content visible"
+      },
+      {
+        "name": "Open hidden file",
+        "steps": [
+          "Create .gitignore file",
+          "Launch app (browser and Electron)",
+          "Click 'Open' button",
+          "Select .gitignore file",
+          "Verify file opens and content displays"
+        ],
+        "expected": "File opens without errors, content visible"
+      },
+      {
+        "name": "Verify All Files is default filter",
+        "steps": [
+          "Launch app (browser and Electron)",
+          "Click 'Open' button",
+          "Observe file picker filter dropdown"
+        ],
+        "expected": "'All Files' is the first/selected option"
+      }
+    ]
+  },
+
+  "qa_signoff": null
+}
