@@ -1,0 +1,836 @@
+{
+  "feature": "Convert codebase to TypeScript and React + Redux",
+  "workflow_type": "refactor",
+  "workflow_rationale": "Complete architectural refactor from vanilla JavaScript to TypeScript + React + Redux. Follows refactor pattern: Add New (setup infrastructure) → Migrate (convert components) → Integration (wire everything) → Cleanup (verify and remove scaffolding).",
+  "phases": [
+    {
+      "id": "phase-1-setup",
+      "name": "Setup & Configuration",
+      "type": "setup",
+      "description": "Install TypeScript, React, Redux dependencies and create all necessary configuration files",
+      "depends_on": [],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-1-1",
+          "description": "Install TypeScript, React, and Redux dependencies",
+          "service": "main",
+          "files_to_modify": ["./package.json"],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "npm list typescript react react-dom @reduxjs/toolkit react-redux",
+            "expected": "All packages listed"
+          },
+          "status": "pending"
+        },
+        {
+          "id": "subtask-1-2",
+          "description": "Install TypeScript type definitions",
+          "service": "main",
+          "files_to_modify": ["./package.json"],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "npm list @types/react @types/react-dom @types/node",
+            "expected": "All type packages listed"
+          },
+          "status": "pending"
+        },
+        {
+          "id": "subtask-1-3",
+          "description": "Install Vite React plugin",
+          "service": "main",
+          "files_to_modify": ["./package.json"],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "npm list @vitejs/plugin-react",
+            "expected": "Plugin installed"
+          },
+          "status": "pending"
+        },
+        {
+          "id": "subtask-1-4",
+          "description": "Create base TypeScript configuration (tsconfig.json)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./tsconfig.json"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat tsconfig.json | grep '\"jsx\": \"react-jsx\"'",
+            "expected": "JSX setting found"
+          },
+          "notes": "Must include: target ES2020, jsx: react-jsx, isolatedModules: true, strict: true",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-1-5",
+          "description": "Create app-specific TypeScript config (tsconfig.app.json)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./tsconfig.app.json"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "test -f tsconfig.app.json && cat tsconfig.app.json | grep '\"extends\"'",
+            "expected": "File exists and extends base config"
+          },
+          "notes": "Extends tsconfig.json, includes src/, for app code only",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-1-6",
+          "description": "Create node-specific TypeScript config (tsconfig.node.json)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./tsconfig.node.json"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "test -f tsconfig.node.json && cat tsconfig.node.json | grep 'vite.config'",
+            "expected": "Config includes vite.config"
+          },
+          "notes": "For Vite config and Electron main process - Node environment",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-1-7",
+          "description": "Update Vite config to support React and TypeScript",
+          "service": "main",
+          "files_to_modify": ["./vite.config.js"],
+          "files_to_create": ["./vite.config.ts"],
+          "patterns_from": ["./vite.config.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat vite.config.ts | grep '@vitejs/plugin-react'",
+            "expected": "React plugin imported"
+          },
+          "notes": "Rename to .ts, add @vitejs/plugin-react to plugins array",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "phase-2-redux-infrastructure",
+      "name": "Redux Store Setup",
+      "type": "implementation",
+      "description": "Create Redux store structure with slices for editor and UI state, plus typed hooks",
+      "depends_on": ["phase-1-setup"],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-2-1",
+          "description": "Create Redux store configuration",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/store/index.ts"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat src/store/index.ts | grep 'configureStore'",
+            "expected": "Store configured with Redux Toolkit"
+          },
+          "notes": "Use configureStore from @reduxjs/toolkit, export RootState and AppDispatch types",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-2-2",
+          "description": "Create editor slice (content, fileName, isModified)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/store/slices/editorSlice.ts"],
+          "patterns_from": ["./src/browser/app.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/store/slices/editorSlice.ts | grep 'createSlice'",
+            "expected": "Slice created with actions"
+          },
+          "notes": "State fields from appState: content (string), fileName (string | null), isModified (boolean)",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-2-3",
+          "description": "Create UI slice (loading, previewVisible, status)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/store/slices/uiSlice.ts"],
+          "patterns_from": ["./src/browser/app.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/store/slices/uiSlice.ts | grep 'loading\\|preview\\|status'",
+            "expected": "UI state fields defined"
+          },
+          "notes": "State: loading (boolean), previewVisible (boolean), status (string), cursorPosition (string)",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-2-4",
+          "description": "Create typed Redux hooks (useAppDispatch, useAppSelector)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/store/hooks.ts"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat src/store/hooks.ts | grep 'useAppDispatch\\|useAppSelector'",
+            "expected": "Typed hooks exported"
+          },
+          "notes": "Export useAppDispatch: () => AppDispatch and useAppSelector: TypedUseSelectorHook<RootState>",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "phase-3-shared-utilities",
+      "name": "Convert Shared Utilities to TypeScript",
+      "type": "implementation",
+      "description": "Convert shared utilities (editor, file-system) to TypeScript with proper type definitions",
+      "depends_on": ["phase-1-setup"],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-3-1",
+          "description": "Create TypeScript type definitions for highlight.js",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/types/highlight.d.ts"],
+          "patterns_from": ["./src/shared/editor.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/types/highlight.d.ts | grep 'HighlightResult'",
+            "expected": "Type definitions exist"
+          },
+          "notes": "Define types for highlight result, language detection, etc.",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-3-2",
+          "description": "Convert editor.js to TypeScript (editor.ts)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/shared/editor.ts"],
+          "patterns_from": ["./src/shared/editor.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/shared/editor.ts | grep 'export' && tsc --noEmit src/shared/editor.ts",
+            "expected": "TypeScript compiles without errors"
+          },
+          "notes": "Keep all functions, add proper types for parameters and return values",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-3-3",
+          "description": "Convert file-system-abstraction.js to TypeScript",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/shared/file-system-abstraction.ts"],
+          "patterns_from": ["./src/shared/file-system-abstraction.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/shared/file-system-abstraction.ts | grep 'interface.*FileSystem' && tsc --noEmit src/shared/file-system-abstraction.ts",
+            "expected": "TypeScript compiles with FileSystem interface defined"
+          },
+          "notes": "Define FileSystemAdapter interface, FileResult type",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-3-4",
+          "description": "Convert browser file-system-handler.js to TypeScript",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/browser/file-system-handler.ts"],
+          "patterns_from": ["./src/browser/file-system-handler.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/browser/file-system-handler.ts | grep 'FileSystemFileHandle' && tsc --noEmit src/browser/file-system-handler.ts",
+            "expected": "Uses browser FileSystemFileHandle types"
+          },
+          "notes": "Implement FileSystemAdapter interface for browser",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "phase-4-react-components",
+      "name": "Create React Components",
+      "type": "implementation",
+      "description": "Build React components for Editor, Toolbar, StatusBar, and PreviewPanel",
+      "depends_on": ["phase-2-redux-infrastructure", "phase-3-shared-utilities"],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-4-1",
+          "description": "Create Editor component (textarea with syntax highlighting)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/components/Editor.tsx"],
+          "patterns_from": ["./src/browser/app.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/components/Editor.tsx | grep 'React.ChangeEvent<HTMLTextAreaElement>'",
+            "expected": "Component with typed event handlers"
+          },
+          "notes": "Controlled textarea connected to Redux editor.content, handles input with typed onChange handler",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-4-2",
+          "description": "Create Toolbar component (file operation buttons)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/components/Toolbar.tsx"],
+          "patterns_from": ["./src/browser/index.html"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/components/Toolbar.tsx | grep 'btn-open\\|btn-save\\|btn-save-as'",
+            "expected": "Buttons for open, save, save-as"
+          },
+          "notes": "Open, Save, Save As, Toggle Preview buttons - dispatch Redux actions on click",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-4-3",
+          "description": "Create StatusBar component (file name, cursor position, status)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/components/StatusBar.tsx"],
+          "patterns_from": ["./src/browser/app.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/components/StatusBar.tsx | grep 'useAppSelector'",
+            "expected": "Component reads from Redux state"
+          },
+          "notes": "Display fileName, modified indicator, cursor position (Ln, Col), status message from Redux",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-4-4",
+          "description": "Create PreviewPanel component (syntax highlighted preview)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/components/PreviewPanel.tsx"],
+          "patterns_from": ["./src/shared/editor.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/components/PreviewPanel.tsx | grep 'useEffect\\|highlightCode'",
+            "expected": "Component uses useEffect for highlighting"
+          },
+          "notes": "Use editor.ts functions, update on content change with debouncing via useEffect",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-4-5",
+          "description": "Create LoadingOverlay component",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/components/LoadingOverlay.tsx"],
+          "patterns_from": ["./src/browser/app.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/components/LoadingOverlay.tsx | grep 'loading'",
+            "expected": "Component shows/hides based on Redux ui.loading"
+          },
+          "notes": "Conditional render based on Redux ui.loading state",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "phase-5-browser-integration",
+      "name": "Browser Platform Integration",
+      "type": "implementation",
+      "description": "Convert browser entry point to React with Redux Provider",
+      "depends_on": ["phase-4-react-components"],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-5-1",
+          "description": "Create Browser App component with Redux Provider",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/browser/App.tsx"],
+          "patterns_from": ["./src/browser/app.js", "./src/browser/index.html"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/browser/App.tsx | grep 'Provider\\|useEffect\\|keyboard'",
+            "expected": "App with Redux Provider and keyboard shortcuts"
+          },
+          "notes": "Root component: Provider wrapping Editor, Toolbar, StatusBar, PreviewPanel, LoadingOverlay. Set up keyboard shortcuts (Ctrl+O, Ctrl+S) in useEffect",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-5-2",
+          "description": "Create browser file operations logic (open, save, saveAs)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/browser/fileOperations.ts"],
+          "patterns_from": ["./src/browser/app.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/browser/fileOperations.ts | grep 'handleOpenFile\\|handleSave\\|handleSaveAs'",
+            "expected": "File operation functions exported"
+          },
+          "notes": "Export async functions that dispatch Redux actions, use file-system-handler.ts",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-5-3",
+          "description": "Create browser entry point (main.tsx)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/browser/main.tsx"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat src/browser/main.tsx | grep 'createRoot\\|import.*App'",
+            "expected": "React 18 createRoot with App component"
+          },
+          "notes": "Use ReactDOM.createRoot (not render), mount App component to #app element",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-5-4",
+          "description": "Update browser index.html to load main.tsx",
+          "service": "main",
+          "files_to_modify": ["./src/browser/index.html"],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat src/browser/index.html | grep 'main.tsx'",
+            "expected": "Script tag loads main.tsx"
+          },
+          "notes": "Change script src from app.js to main.tsx",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "phase-6-electron-integration",
+      "name": "Electron Platform Integration",
+      "type": "implementation",
+      "description": "Convert Electron renderer, main, and preload to TypeScript + React",
+      "depends_on": ["phase-4-react-components"],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-6-1",
+          "description": "Create Electron type definitions for IPC API",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/types/electron.d.ts"],
+          "patterns_from": ["./src/electron/preload.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/types/electron.d.ts | grep 'ElectronAPI\\|Window'",
+            "expected": "Window interface extended with electronAPI"
+          },
+          "notes": "Define ElectronAPI interface matching preload bridge, extend Window interface",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-2",
+          "description": "Convert Electron preload.js to TypeScript",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/electron/preload.ts"],
+          "patterns_from": ["./src/electron/preload.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/electron/preload.ts | grep 'contextBridge.exposeInMainWorld' && tsc --noEmit src/electron/preload.ts",
+            "expected": "TypeScript compiles, exposes electronAPI"
+          },
+          "notes": "Keep same IPC methods, add type annotations matching ElectronAPI interface",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-3",
+          "description": "Convert Electron file-system-handler.js to TypeScript",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/electron/file-system-handler.ts"],
+          "patterns_from": ["./src/electron/file-system-handler.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/electron/file-system-handler.ts | grep 'window.electronAPI' && tsc --noEmit src/electron/file-system-handler.ts",
+            "expected": "Uses typed electronAPI"
+          },
+          "notes": "Implement FileSystemAdapter using window.electronAPI with proper typing",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-4",
+          "description": "Create Electron Renderer App component",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/electron/RendererApp.tsx"],
+          "patterns_from": ["./src/browser/App.tsx", "./src/electron/renderer.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/electron/RendererApp.tsx | grep 'Provider\\|electronAPI'",
+            "expected": "App component with Electron-specific setup"
+          },
+          "notes": "Similar to Browser App but uses Electron file operations, checks for electronAPI availability",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-5",
+          "description": "Create Electron file operations logic",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/electron/fileOperations.ts"],
+          "patterns_from": ["./src/electron/renderer.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/electron/fileOperations.ts | grep 'window.electronAPI'",
+            "expected": "File operations using electronAPI"
+          },
+          "notes": "Async functions using window.electronAPI, dispatch Redux actions",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-6",
+          "description": "Create Electron renderer entry point (renderer.tsx)",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/electron/renderer.tsx"],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat src/electron/renderer.tsx | grep 'createRoot\\|RendererApp'",
+            "expected": "React 18 createRoot with RendererApp"
+          },
+          "notes": "Mount RendererApp to #app element using createRoot",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-7",
+          "description": "Update Electron index.html to load renderer.tsx",
+          "service": "main",
+          "files_to_modify": ["./src/electron/index.html"],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat src/electron/index.html | grep 'renderer.tsx'",
+            "expected": "Script loads renderer.tsx"
+          },
+          "notes": "Change script src from renderer.js to renderer.tsx",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-8",
+          "description": "Convert Electron main.js to TypeScript",
+          "service": "main",
+          "files_to_modify": [],
+          "files_to_create": ["./src/electron/main.ts"],
+          "patterns_from": ["./src/electron/main.js"],
+          "verification": {
+            "type": "command",
+            "command": "cat src/electron/main.ts | grep 'BrowserWindow\\|ipcMain' && tsc --noEmit --target ES2020 --module commonjs src/electron/main.ts",
+            "expected": "TypeScript compiles with Electron types"
+          },
+          "notes": "Add Electron type imports, keep all IPC handlers, update preload path to preload.ts",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-6-9",
+          "description": "Update package.json main field for TypeScript",
+          "service": "main",
+          "files_to_modify": ["./package.json"],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cat package.json | grep '\"main\"'",
+            "expected": "Main field points to compiled main.js or main.ts"
+          },
+          "notes": "May need to update electron main entry point depending on build setup",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "phase-7-integration",
+      "name": "Integration & Verification",
+      "type": "integration",
+      "description": "Verify both browser and Electron platforms work correctly with TypeScript + React + Redux",
+      "depends_on": ["phase-5-browser-integration", "phase-6-electron-integration"],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-7-1",
+          "description": "Build browser version and verify it runs",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "npm run build:browser && test -f dist/browser/index.html",
+            "expected": "Build succeeds, output files exist"
+          },
+          "notes": "Vite should compile TypeScript and React without errors",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-7-2",
+          "description": "Test browser version with dev server",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173",
+            "checks": [
+              "App renders without errors",
+              "Editor textarea is visible",
+              "Toolbar buttons present",
+              "Status bar shows 'Ready'",
+              "No console errors"
+            ]
+          },
+          "notes": "Start dev server with npm run dev:browser, verify UI loads",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-7-3",
+          "description": "Test browser file operations (open, save, save-as)",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173",
+            "checks": [
+              "Open button triggers file picker",
+              "Save button works",
+              "Save As triggers save picker",
+              "Modified indicator updates",
+              "File name displays correctly"
+            ]
+          },
+          "notes": "Manual test - open a file, modify it, save it, verify state updates in Redux DevTools",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-7-4",
+          "description": "Test browser syntax highlighting",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173",
+            "checks": [
+              "Toggle Preview button shows/hides preview panel",
+              "Syntax highlighting applies to code",
+              "Language detection works (e.g., .js file shows 'javascript')",
+              "Highlighting updates as you type (debounced)"
+            ]
+          },
+          "notes": "Open a JavaScript file, verify syntax highlighting appears in preview panel",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-7-5",
+          "description": "Test Electron app launches",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "timeout 10 npm run dev:electron || true",
+            "expected": "Electron window opens (will timeout after 10s, that's ok)"
+          },
+          "notes": "Verify Electron app starts without errors, window appears",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-7-6",
+          "description": "Test Electron file operations and IPC",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "manual",
+            "instructions": "1. Launch Electron app (npm run dev:electron)\n2. Click Open - verify native file dialog appears\n3. Open a file - verify content loads\n4. Modify content - verify modified indicator appears\n5. Save file - verify save succeeds\n6. Check DevTools console for errors"
+          },
+          "notes": "Full manual test of Electron file operations via IPC",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-7-7",
+          "description": "Verify keyboard shortcuts work on both platforms",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "manual",
+            "instructions": "Test keyboard shortcuts:\n1. Ctrl/Cmd+O - Open file\n2. Ctrl/Cmd+S - Save file\n3. Ctrl/Cmd+Shift+S - Save As\nTest on both browser and Electron"
+          },
+          "notes": "Ensure keyboard event handlers work in React components",
+          "status": "pending"
+        },
+        {
+          "id": "subtask-7-8",
+          "description": "Clean up old JavaScript files",
+          "service": "main",
+          "all_services": false,
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "! test -f src/browser/app.js && ! test -f src/electron/renderer.js",
+            "expected": "Old .js files removed"
+          },
+          "notes": "Only remove after verifying TypeScript versions work. Remove: app.js, renderer.js, main.js, preload.js, editor.js, file-system-abstraction.js, both file-system-handler.js files",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_phases": 7,
+    "total_subtasks": 45,
+    "services_involved": ["main"],
+    "estimated_duration": "8-12 hours",
+    "parallelism": {
+      "max_parallel_phases": 2,
+      "parallel_groups": [
+        {
+          "phases": ["phase-3-shared-utilities", "phase-2-redux-infrastructure"],
+          "reason": "Both depend only on phase-1-setup, work on different files"
+        },
+        {
+          "phases": ["phase-5-browser-integration", "phase-6-electron-integration"],
+          "reason": "Both depend on phases 2-4, work on different platform entry points"
+        }
+      ],
+      "recommended_workers": 2,
+      "speedup_estimate": "1.3x faster than sequential"
+    },
+    "startup_command": "source auto-claude/.venv/bin/activate && python auto-claude/run.py --spec 002 --parallel 2"
+  },
+  "verification_strategy": {
+    "risk_level": "high",
+    "skip_validation": false,
+    "test_creation_phase": "post_implementation",
+    "test_types_required": ["unit", "integration", "e2e"],
+    "security_scanning_required": false,
+    "staging_deployment_required": false,
+    "acceptance_criteria": [
+      "Browser version runs without errors at localhost:5173",
+      "Electron app launches and renders UI",
+      "File operations (open, save, save-as) work on both platforms",
+      "Syntax highlighting functions correctly",
+      "Redux state updates properly (verify with DevTools)",
+      "Keyboard shortcuts work",
+      "Modified indicator updates correctly",
+      "No TypeScript compilation errors",
+      "All existing functionality preserved"
+    ],
+    "verification_steps": [
+      {
+        "name": "TypeScript Compilation Check",
+        "command": "tsc --noEmit",
+        "expected_outcome": "No TypeScript errors",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Browser Build",
+        "command": "npm run build:browser",
+        "expected_outcome": "Build succeeds, dist/ folder created",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Browser Dev Server",
+        "command": "npm run dev:browser",
+        "expected_outcome": "Dev server starts on port 5173",
+        "type": "test",
+        "required": true,
+        "blocking": false
+      },
+      {
+        "name": "Electron Launch",
+        "command": "npm run dev:electron",
+        "expected_outcome": "Electron window opens",
+        "type": "test",
+        "required": true,
+        "blocking": false
+      }
+    ],
+    "reasoning": "High-risk complete rewrite requires comprehensive verification. All existing functionality must work after migration. E2E tests critical but will be created in future spec - for now, manual testing via verification steps."
+  },
+  "qa_acceptance": {
+    "unit_tests": {
+      "required": false,
+      "commands": [],
+      "minimum_coverage": null,
+      "notes": "Unit tests will be created in a future spec after migration completes"
+    },
+    "integration_tests": {
+      "required": false,
+      "commands": [],
+      "services_to_test": [],
+      "notes": "Integration tests will be created in a future spec"
+    },
+    "e2e_tests": {
+      "required": false,
+      "commands": [],
+      "flows": [],
+      "notes": "E2E tests will be created in a future spec"
+    },
+    "browser_verification": {
+      "required": true,
+      "pages": [
+        {
+          "url": "http://localhost:5173/",
+          "checks": [
+            "App renders without errors",
+            "Editor, Toolbar, StatusBar visible",
+            "File operations accessible",
+            "Preview panel toggles",
+            "No console errors"
+          ]
+        }
+      ]
+    },
+    "manual_verification": {
+      "required": true,
+      "test_cases": [
+        "Open a .js file in browser version - verify syntax highlighting",
+        "Open a .js file in Electron - verify file dialog and content load",
+        "Modify text - verify modified indicator appears",
+        "Save file - verify save succeeds",
+        "Test all keyboard shortcuts (Ctrl+O, Ctrl+S, Ctrl+Shift+S)",
+        "Toggle preview panel - verify it shows/hides",
+        "Check Redux DevTools - verify state updates correctly"
+      ]
+    }
+  },
+  "qa_signoff": null
+}

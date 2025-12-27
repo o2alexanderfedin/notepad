@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Electron desktop notepad with automatic syntax highlighting">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>Notepad - Electron</title>
+  <link rel="stylesheet" href="../../public/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header with file operations -->
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <h1 class="app-title">Notepad</h1>
+        <span id="file-name" class="file-name">Untitled</span>
+        <span id="modified-indicator" class="modified-indicator" hidden>*</span>
+      </div>
+      <div class="toolbar-right">
+        <button id="btn-open" type="button" class="btn btn-primary">
+          <span class="btn-icon" aria-hidden="true">&#128194;</span>
+          Open File
+        </button>
+        <button id="btn-save" type="button" class="btn btn-secondary">
+          <span class="btn-icon" aria-hidden="true">&#128190;</span>
+          Save
+        </button>
+        <button id="btn-save-as" type="button" class="btn btn-secondary">
+          <span class="btn-icon" aria-hidden="true">&#128190;</span>
+          Save As
+        </button>
+        <button id="btn-toggle-preview" type="button" class="btn btn-secondary">
+          <span class="btn-icon" aria-hidden="true">&#128065;</span>
+          Preview
+        </button>
+      </div>
+    </header>
+
+    <!-- Main editor area -->
+    <main class="editor-container">
+      <!-- Electron API unavailable warning (hidden by default, shown via JS) -->
+      <div id="electron-warning" class="browser-warning" hidden>
+        <div class="warning-content">
+          <h2>Electron API Unavailable</h2>
+          <p>
+            The Electron API bridge is not available. File operations require
+            the application to be properly running in Electron.
+          </p>
+          <p>
+            Please ensure:
+          </p>
+          <ul>
+            <li>The application was launched using <code>npm run dev:electron</code></li>
+            <li>The preload script is properly configured</li>
+            <li>Context isolation is enabled in the main process</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Editor panel with textarea for editing -->
+      <div id="editor-panel" class="editor-panel">
+        <textarea
+          id="editor"
+          class="editor"
+          placeholder="Start typing or open a file..."
+          spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+        ></textarea>
+      </div>
+
+      <!-- Syntax highlighting preview panel -->
+      <div id="preview-panel" class="preview-panel" hidden>
+        <div class="preview-header">
+          <span class="preview-title">Syntax Highlighting Preview</span>
+          <span id="language-indicator" class="language-indicator">Plain Text</span>
+        </div>
+        <pre id="code-preview" class="code-preview"><code id="highlighted-code"></code></pre>
+      </div>
+    </main>
+
+    <!-- Status bar -->
+    <footer class="status-bar">
+      <span id="status-message" class="status-message">Ready</span>
+      <span id="cursor-position" class="cursor-position">Ln 1, Col 1</span>
+    </footer>
+
+    <!-- Loading overlay (hidden by default) -->
+    <div id="loading-overlay" class="loading-overlay" hidden>
+      <div class="loading-spinner"></div>
+      <span class="loading-text">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Application scripts (ES modules) -->
+  <script type="module" src="./renderer.js"></script>
+</body>
+</html>
