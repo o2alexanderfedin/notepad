@@ -1,0 +1,652 @@
+{
+  "id": "roadmap-2025-12-26",
+  "project_name": "Notepad App",
+  "version": "1.0",
+  "vision": "A lightweight, dual-platform notepad with automatic syntax highlighting that runs seamlessly in both browser and desktop.",
+  "target_audience": {
+    "primary": "Developers and programmers who need a lightweight, cross-platform code editor with automatic syntax highlighting for quick file editing",
+    "secondary": [
+      "Technical writers editing markdown and documentation files",
+      "System administrators editing configuration files",
+      "Students learning to code who want a simple editor",
+      "Power users who want a fast notepad alternative with syntax highlighting"
+    ]
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Foundation & Quality",
+      "description": "Establish robust foundation with comprehensive testing, error handling, and production-ready builds. Ensure the core experience is rock-solid before adding features.",
+      "order": 1,
+      "status": "planned",
+      "features": [
+        "feature-1",
+        "feature-2",
+        "feature-3",
+        "feature-4",
+        "feature-5"
+      ],
+      "milestones": [
+        {
+          "id": "milestone-1-1",
+          "title": "Test Infrastructure Complete",
+          "description": "Unit tests and E2E tests running for both browser and Electron platforms",
+          "features": ["feature-1", "feature-2"],
+          "status": "planned"
+        },
+        {
+          "id": "milestone-1-2",
+          "title": "Production Ready",
+          "description": "Electron app packaged and distributable, browser version deployable",
+          "features": ["feature-3", "feature-4", "feature-5"],
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Core Experience Enhancement",
+      "description": "Add essential features that developers expect from a code editor while maintaining the lightweight, fast experience.",
+      "order": 2,
+      "status": "planned",
+      "features": [
+        "feature-6",
+        "feature-7",
+        "feature-8",
+        "feature-9",
+        "feature-10",
+        "feature-11"
+      ],
+      "milestones": [
+        {
+          "id": "milestone-2-1",
+          "title": "Developer-Friendly Editing",
+          "description": "Line numbers, find/replace, and keyboard shortcuts match developer expectations",
+          "features": ["feature-6", "feature-7", "feature-8"],
+          "status": "planned"
+        },
+        {
+          "id": "milestone-2-2",
+          "title": "Personalized Experience",
+          "description": "Theme support and recent files make the editor feel personal and efficient",
+          "features": ["feature-9", "feature-10", "feature-11"],
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Power User Features",
+      "description": "Add advanced features for power users who want more from their quick-edit tool, while keeping the lightweight core.",
+      "order": 3,
+      "status": "planned",
+      "features": [
+        "feature-12",
+        "feature-13",
+        "feature-14",
+        "feature-15",
+        "feature-16"
+      ],
+      "milestones": [
+        {
+          "id": "milestone-3-1",
+          "title": "Multi-File Workflow",
+          "description": "Users can work with multiple files efficiently via tabs and session restoration",
+          "features": ["feature-12", "feature-14"],
+          "status": "planned"
+        },
+        {
+          "id": "milestone-3-2",
+          "title": "Smart Editing",
+          "description": "Auto-save, code folding, and large file support for professional workflows",
+          "features": ["feature-13", "feature-15", "feature-16"],
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Growth & Polish",
+      "description": "Polish the experience and add features that help grow the user base through word-of-mouth and differentiation.",
+      "order": 4,
+      "status": "planned",
+      "features": [
+        "feature-17",
+        "feature-18",
+        "feature-19",
+        "feature-20"
+      ],
+      "milestones": [
+        {
+          "id": "milestone-4-1",
+          "title": "Customization Complete",
+          "description": "Settings UI and keyboard customization available",
+          "features": ["feature-17", "feature-18"],
+          "status": "planned"
+        },
+        {
+          "id": "milestone-4-2",
+          "title": "Market Ready",
+          "description": "App store presence and community features for growth",
+          "features": ["feature-19", "feature-20"],
+          "status": "planned"
+        }
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "feature-1",
+      "title": "Unit Test Infrastructure",
+      "description": "Set up comprehensive unit testing infrastructure with Vitest for both shared code and platform-specific adapters. Cover file system abstraction, syntax highlighting, and language detection logic.",
+      "rationale": "Without tests, refactoring and adding features becomes risky. Tests are foundation for sustainable development and catch regressions early. Addresses technical debt from discovery.",
+      "priority": "must",
+      "complexity": "medium",
+      "impact": "high",
+      "phase_id": "phase-1",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Vitest configured and running for browser and Electron code",
+        "File system abstraction has 80%+ test coverage",
+        "Syntax highlighting logic has unit tests for all 17 supported languages",
+        "Test commands added to package.json (npm test, npm run test:watch)",
+        "Tests run in under 30 seconds"
+      ],
+      "user_stories": [
+        "As a developer, I want automated tests so that I can refactor with confidence",
+        "As a contributor, I want clear test patterns so that I can add tests for new features"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-2",
+      "title": "End-to-End Testing",
+      "description": "Implement E2E tests using Playwright for browser and Spectron/Playwright for Electron. Test critical user flows: open file, edit, save, syntax highlighting display.",
+      "rationale": "E2E tests verify the complete user experience works across platforms. Critical for a dual-platform app where platform-specific bugs are common.",
+      "priority": "must",
+      "complexity": "high",
+      "impact": "high",
+      "phase_id": "phase-1",
+      "dependencies": ["feature-1"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Playwright configured for browser testing",
+        "Electron E2E testing framework set up",
+        "Core flows tested: open file, edit content, save file",
+        "Syntax highlighting verification in tests",
+        "Tests run in CI pipeline"
+      ],
+      "user_stories": [
+        "As a developer, I want E2E tests so that releases don't break user workflows",
+        "As a user, I want a reliable app that works consistently on both platforms"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-3",
+      "title": "Error Boundary & Graceful Degradation",
+      "description": "Add error boundaries to catch syntax highlighting failures, file operation errors, and other runtime issues. Display user-friendly error messages and allow graceful recovery.",
+      "rationale": "Users should never see a blank screen or crash. Graceful error handling builds trust and ensures the app remains usable even when things go wrong.",
+      "priority": "must",
+      "complexity": "low",
+      "impact": "high",
+      "phase_id": "phase-1",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Syntax highlighting failures fall back to plain text display",
+        "File open errors show clear user-friendly message",
+        "File save errors prompt user to try again or save elsewhere",
+        "App never shows blank screen on errors",
+        "Error details logged for debugging"
+      ],
+      "user_stories": [
+        "As a user, I want clear error messages so that I understand what went wrong",
+        "As a user, I want the app to recover from errors so that I don't lose my work"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-4",
+      "title": "Electron Production Build & Distribution",
+      "description": "Configure electron-builder for production builds on Windows, macOS, and Linux. Create installers (DMG, EXE, AppImage) and set up code signing.",
+      "rationale": "Users need installable packages to use the desktop version. Professional installers build trust and make installation seamless. Addresses technical debt.",
+      "priority": "must",
+      "complexity": "medium",
+      "impact": "high",
+      "phase_id": "phase-1",
+      "dependencies": ["feature-3"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "electron-builder configured for all three platforms",
+        "DMG created for macOS with proper app icon",
+        "EXE installer created for Windows",
+        "AppImage created for Linux",
+        "Build process documented in README",
+        "App version displayed in UI"
+      ],
+      "user_stories": [
+        "As a macOS user, I want a DMG so that I can drag-and-drop install the app",
+        "As a Windows user, I want an installer so that the app integrates with my system"
+      ],
+      "competitor_insight_ids": ["pain-3-1"]
+    },
+    {
+      "id": "feature-5",
+      "title": "CI/CD Pipeline",
+      "description": "Set up GitHub Actions for continuous integration: run tests on push, build binaries on release, and deploy browser version. Automate quality gates.",
+      "rationale": "Automation ensures every change is tested and releases are consistent. Reduces manual error and speeds up development cycle.",
+      "priority": "should",
+      "complexity": "medium",
+      "impact": "medium",
+      "phase_id": "phase-1",
+      "dependencies": ["feature-1", "feature-4"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "GitHub Actions workflow for running tests on PR",
+        "Build workflow creates binaries for all platforms",
+        "Browser version auto-deploys to GitHub Pages on main branch merge",
+        "Release workflow creates GitHub release with binaries",
+        "Build status badge in README"
+      ],
+      "user_stories": [
+        "As a developer, I want automated builds so that releases are consistent",
+        "As a contributor, I want CI checks so that I know if my PR breaks anything"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-6",
+      "title": "Line Numbers Display",
+      "description": "Add optional line numbers in the editor gutter. Line numbers should be visible in both edit mode and preview mode, synced with scroll position.",
+      "rationale": "Developers universally expect line numbers in code editors. This is a fundamental feature that built-in editors lack. Addresses competitor pain point from built-in OS editors.",
+      "priority": "must",
+      "complexity": "low",
+      "impact": "high",
+      "phase_id": "phase-2",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Line numbers displayed in left gutter",
+        "Line numbers scroll with content",
+        "Current line highlighted",
+        "Toggle to show/hide line numbers",
+        "Line numbers work in both edit and preview modes"
+      ],
+      "user_stories": [
+        "As a developer, I want line numbers so that I can reference specific lines",
+        "As a user, I want to see which line I'm editing for orientation in long files"
+      ],
+      "competitor_insight_ids": ["pain-5-3"]
+    },
+    {
+      "id": "feature-7",
+      "title": "Find and Replace",
+      "description": "Implement find and replace functionality with regex support, case sensitivity toggle, and whole word matching. Include find next/previous navigation.",
+      "rationale": "Find and replace is essential for editing code files. All competitor editors have this feature. Major gap compared to built-in editors.",
+      "priority": "must",
+      "complexity": "medium",
+      "impact": "high",
+      "phase_id": "phase-2",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Find dialog opens with Ctrl+F / Cmd+F",
+        "Replace dialog opens with Ctrl+H / Cmd+H",
+        "Case sensitive search toggle",
+        "Whole word matching toggle",
+        "Regex search toggle",
+        "Match count displayed",
+        "Navigate between matches with Enter or arrows",
+        "Replace and Replace All functionality"
+      ],
+      "user_stories": [
+        "As a developer, I want to find text quickly so that I can navigate large files",
+        "As a user, I want to replace text efficiently so that I can make bulk changes"
+      ],
+      "competitor_insight_ids": ["pain-5-3"]
+    },
+    {
+      "id": "feature-8",
+      "title": "Enhanced Keyboard Shortcuts",
+      "description": "Implement comprehensive keyboard shortcuts matching developer expectations: duplicate line, move line up/down, toggle comment, indent/outdent, go to line.",
+      "rationale": "Power users rely on keyboard shortcuts for efficient editing. Missing shortcuts frustrate developers coming from other editors.",
+      "priority": "should",
+      "complexity": "low",
+      "impact": "medium",
+      "phase_id": "phase-2",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Ctrl+D / Cmd+D duplicates current line",
+        "Alt+Up/Down moves line up/down",
+        "Ctrl+/ / Cmd+/ toggles line comment",
+        "Tab/Shift+Tab for indent/outdent",
+        "Ctrl+G / Cmd+G for go to line dialog",
+        "Shortcuts displayed in menu or help panel",
+        "Shortcuts work consistently on all platforms"
+      ],
+      "user_stories": [
+        "As a developer, I want familiar shortcuts so that I can edit quickly",
+        "As a power user, I want line manipulation shortcuts so that I can work efficiently"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-9",
+      "title": "Dark Mode & Theme Support",
+      "description": "Add dark mode with system preference detection. Include 2-3 built-in themes (light, dark, high contrast) and ensure syntax highlighting colors adapt to theme.",
+      "rationale": "Dark mode is expected by developers and reduces eye strain. Many competitors have dated light-only UIs. Differentiates from Notepad++ dated appearance.",
+      "priority": "should",
+      "complexity": "medium",
+      "impact": "high",
+      "phase_id": "phase-2",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Dark mode with dark background and light text",
+        "Light mode with light background and dark text",
+        "High contrast mode for accessibility",
+        "Automatic detection of system color scheme preference",
+        "Syntax highlighting colors adapt to each theme",
+        "Theme preference persisted in localStorage",
+        "Toggle in UI to switch themes"
+      ],
+      "user_stories": [
+        "As a developer, I want dark mode so that I can reduce eye strain at night",
+        "As a user, I want the app to match my system theme automatically"
+      ],
+      "competitor_insight_ids": ["pain-3-2"]
+    },
+    {
+      "id": "feature-10",
+      "title": "Recent Files List",
+      "description": "Track recently opened files and display them in a quick-access list. Allow users to reopen recent files with one click. Persist across sessions.",
+      "rationale": "Reduces friction for repeated editing of same files. Identified as known gap in discovery. Saves time compared to navigating file dialogs repeatedly.",
+      "priority": "should",
+      "complexity": "low",
+      "impact": "high",
+      "phase_id": "phase-2",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Recent files list shows last 10 opened files",
+        "List persisted in localStorage (browser) and electron-store (desktop)",
+        "One-click to reopen file",
+        "Clear option to remove individual items or all",
+        "Shows file name and path",
+        "Handles missing files gracefully (removes from list)"
+      ],
+      "user_stories": [
+        "As a user, I want to quickly reopen files I was working on yesterday",
+        "As a developer, I want quick access to config files I edit frequently"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-11",
+      "title": "Font Customization",
+      "description": "Allow users to customize editor font family, size, and line height. Include popular monospace font options and custom font input.",
+      "rationale": "Font preferences are personal and affect readability. Developers have strong font preferences (Fira Code, JetBrains Mono, etc.).",
+      "priority": "could",
+      "complexity": "low",
+      "impact": "medium",
+      "phase_id": "phase-2",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Font size adjustable (8px - 32px)",
+        "Preset monospace fonts (system, Consolas, Monaco, Fira Code)",
+        "Custom font family input",
+        "Line height adjustable",
+        "Changes preview in real-time",
+        "Preferences persisted"
+      ],
+      "user_stories": [
+        "As a developer, I want to use my preferred coding font",
+        "As a user with vision issues, I want to increase font size for readability"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-12",
+      "title": "Multi-Tab Interface",
+      "description": "Support opening multiple files in tabs. Allow tab reordering, close individual tabs, and close-all functionality. Show unsaved indicator per tab.",
+      "rationale": "Multiple tabs are standard in code editors. While this adds complexity, power users expect to work with multiple files without reopening.",
+      "priority": "should",
+      "complexity": "high",
+      "impact": "high",
+      "phase_id": "phase-3",
+      "dependencies": ["feature-10"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Multiple files open simultaneously in tabs",
+        "Tab bar shows file names",
+        "Unsaved indicator (dot/asterisk) on modified tabs",
+        "Click tab to switch files",
+        "Right-click context menu: close, close others, close all",
+        "Drag to reorder tabs",
+        "Ctrl+W / Cmd+W closes current tab",
+        "Ctrl+Tab cycles through tabs"
+      ],
+      "user_stories": [
+        "As a developer, I want to open multiple files so that I can reference one while editing another",
+        "As a user, I want tabs so that I don't lose context when switching files"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-13",
+      "title": "Auto-Save",
+      "description": "Optionally auto-save files after a configurable delay. Include visual indicator when auto-save is pending or complete. Option to disable per-file or globally.",
+      "rationale": "Auto-save prevents data loss and matches modern app expectations. Reduces friction of manual saving.",
+      "priority": "could",
+      "complexity": "medium",
+      "impact": "medium",
+      "phase_id": "phase-3",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Auto-save toggle in settings (off by default)",
+        "Configurable delay (1-30 seconds)",
+        "Visual indicator when file is being saved",
+        "No auto-save for new untitled files",
+        "Works in both browser and Electron",
+        "Respects file system permissions"
+      ],
+      "user_stories": [
+        "As a user, I want auto-save so that I don't lose work if I forget to save",
+        "As a developer, I want configurable auto-save delay to control when saves happen"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-14",
+      "title": "Session Restoration",
+      "description": "Remember open files and cursor positions when closing the app. Offer to restore session on next launch. Works with multi-tab feature.",
+      "rationale": "Addresses known gap of no session history. Users expect to continue where they left off, especially after accidental closes.",
+      "priority": "could",
+      "complexity": "medium",
+      "impact": "medium",
+      "phase_id": "phase-3",
+      "dependencies": ["feature-12"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Open files list saved on close",
+        "Cursor position per file saved",
+        "Scroll position per file saved",
+        "Prompt to restore session on launch",
+        "Option to always restore without prompt",
+        "Handles missing files gracefully"
+      ],
+      "user_stories": [
+        "As a user, I want to continue where I left off after closing the app",
+        "As a developer, I want my workspace restored after a restart"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-15",
+      "title": "Code Folding",
+      "description": "Add ability to fold/collapse code blocks (functions, classes, objects). Show fold indicators in gutter. Support fold all/unfold all.",
+      "rationale": "Code folding helps navigate large files by hiding irrelevant sections. Expected feature for code editors handling large files.",
+      "priority": "could",
+      "complexity": "high",
+      "impact": "medium",
+      "phase_id": "phase-3",
+      "dependencies": ["feature-6"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Fold indicators in gutter for foldable blocks",
+        "Click to fold/unfold individual blocks",
+        "Keyboard shortcut to fold/unfold (Ctrl+Shift+[ and ])",
+        "Fold all / Unfold all command",
+        "Folded blocks show ellipsis (...)",
+        "Works with major languages (JS, Python, JSON, HTML)"
+      ],
+      "user_stories": [
+        "As a developer, I want to fold functions so that I can focus on relevant code",
+        "As a user editing large JSON, I want to collapse sections for navigation"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-16",
+      "title": "Large File Performance Optimization",
+      "description": "Optimize handling of files larger than 1MB. Implement virtualized rendering for long files and optional syntax highlighting disable for very large files.",
+      "rationale": "Addresses known gap of large file handling. Prevents app from becoming unresponsive with large log files or data files.",
+      "priority": "should",
+      "complexity": "high",
+      "impact": "medium",
+      "phase_id": "phase-3",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Files up to 5MB open within 2 seconds",
+        "Syntax highlighting optional for files > 1MB",
+        "Virtual scrolling for files > 10000 lines",
+        "Memory usage stays under 200MB for large files",
+        "Warning message for files > 10MB",
+        "No blocking or freezing during large file operations"
+      ],
+      "user_stories": [
+        "As a sysadmin, I want to view large log files without the app freezing",
+        "As a developer, I want to open large JSON files quickly"
+      ],
+      "competitor_insight_ids": ["pain-1-2"]
+    },
+    {
+      "id": "feature-17",
+      "title": "Settings UI Panel",
+      "description": "Create a visual settings panel to configure all preferences. Replace manual config with user-friendly toggles, dropdowns, and inputs.",
+      "rationale": "Visual settings are more approachable than JSON config files (Sublime Text weakness). Makes customization accessible to all users.",
+      "priority": "could",
+      "complexity": "medium",
+      "impact": "medium",
+      "phase_id": "phase-4",
+      "dependencies": ["feature-9", "feature-11"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Settings panel opens from menu or Ctrl+, / Cmd+,",
+        "Sections for Editor, Appearance, Files",
+        "Changes apply immediately",
+        "Reset to defaults option",
+        "Settings sync between browser and desktop (optional)"
+      ],
+      "user_stories": [
+        "As a user, I want a visual settings panel instead of editing config files",
+        "As a new user, I want to discover available settings easily"
+      ],
+      "competitor_insight_ids": ["pain-2-4"]
+    },
+    {
+      "id": "feature-18",
+      "title": "Customizable Keyboard Shortcuts",
+      "description": "Allow users to customize keyboard shortcuts. Show current bindings and allow rebinding. Support importing/exporting keybindings.",
+      "rationale": "Power users have muscle memory from other editors. Allowing customization reduces friction for users switching from other tools.",
+      "priority": "could",
+      "complexity": "medium",
+      "impact": "low",
+      "phase_id": "phase-4",
+      "dependencies": ["feature-8", "feature-17"],
+      "status": "idea",
+      "acceptance_criteria": [
+        "List of all commands with current shortcuts",
+        "Click to record new shortcut",
+        "Conflict detection and warning",
+        "Reset individual or all shortcuts",
+        "Export keybindings as JSON",
+        "Import keybindings from JSON"
+      ],
+      "user_stories": [
+        "As a Sublime Text user, I want to use my familiar shortcuts",
+        "As a power user, I want to optimize shortcuts for my workflow"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-19",
+      "title": "Additional Language Support",
+      "description": "Expand syntax highlighting to support more languages beyond the initial 17. Add languages based on user requests and popularity.",
+      "rationale": "More language support expands the user base. Some users need niche languages that aren't in initial set.",
+      "priority": "could",
+      "complexity": "low",
+      "impact": "medium",
+      "phase_id": "phase-4",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Add 10+ additional languages (Rust, Go, Swift, Kotlin, etc.)",
+        "Language packs loaded on-demand to keep initial bundle small",
+        "User can request languages via GitHub issues",
+        "Language detection updated for new extensions",
+        "Documentation of supported languages"
+      ],
+      "user_stories": [
+        "As a Rust developer, I want Rust syntax highlighting",
+        "As a Go developer, I want Go files highlighted correctly"
+      ],
+      "competitor_insight_ids": []
+    },
+    {
+      "id": "feature-20",
+      "title": "Drag and Drop File Opening",
+      "description": "Allow users to drag files from file explorer directly onto the app window to open them. Support in both browser and Electron.",
+      "rationale": "Drag and drop is a natural interaction that users expect. Reduces steps to open files compared to file dialog.",
+      "priority": "should",
+      "complexity": "low",
+      "impact": "medium",
+      "phase_id": "phase-4",
+      "dependencies": [],
+      "status": "idea",
+      "acceptance_criteria": [
+        "Drag file onto window shows drop zone indicator",
+        "Dropping file opens it in editor",
+        "Works in browser version (reads file content)",
+        "Works in Electron version (gets file path)",
+        "Multiple files dropped open in tabs (if tabs enabled)",
+        "Non-text files show error message"
+      ],
+      "user_stories": [
+        "As a user, I want to drag files to open them quickly",
+        "As a power user, I want to drop multiple files to open them all"
+      ],
+      "competitor_insight_ids": []
+    }
+  ],
+  "metadata": {
+    "created_at": "2025-12-26T16:15:00Z",
+    "updated_at": "2025-12-26T16:15:00Z",
+    "generated_by": "roadmap_features agent",
+    "prioritization_framework": "MoSCoW",
+    "competitor_analysis_used": true,
+    "competitor_insights_linked": 8,
+    "total_features": 20,
+    "features_by_priority": {
+      "must": 6,
+      "should": 8,
+      "could": 6
+    }
+  }
+}

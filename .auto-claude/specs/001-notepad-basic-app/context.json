@@ -1,0 +1,37 @@
+{
+  "task_description": "Dual-platform notepad application with automatic syntax highlighting. Runs in both browser (using File System Access API) and Electron (using native file system). Features auto-detection of programming languages and unified file system abstraction layer.",
+  "scoped_services": ["notepad-app"],
+  "files_to_modify": [],
+  "files_to_create": [
+    "package.json",
+    "src/shared/editor.js",
+    "src/shared/file-system-abstraction.js",
+    "src/browser/file-system-handler.js",
+    "src/browser/index.html",
+    "src/browser/app.js",
+    "src/electron/main.js",
+    "src/electron/preload.js",
+    "src/electron/file-system-handler.js",
+    "src/electron/renderer.js",
+    "src/electron/index.html",
+    "public/styles.css"
+  ],
+  "files_to_reference": [],
+  "patterns": {
+    "file_system_abstraction": "Use adapter pattern with factory method to detect runtime environment (browser vs Electron) and return appropriate file system handler",
+    "electron_security": "Always use contextBridge.exposeInMainWorld() in preload scripts, enable contextIsolation, all file operations in main process via ipcMain.handle/ipcRenderer.invoke",
+    "syntax_highlighting": "Use Highlight.js with hljs.highlightAuto() for automatic language detection, apply to <pre><code> DOM structure",
+    "browser_file_api": "File System Access API requires user gesture, works only in Chromium browsers, use showOpenFilePicker/showSaveFilePicker with FileHandle storage"
+  },
+  "existing_implementations": {
+    "description": "Greenfield project - no existing implementations to reference",
+    "relevant_files": []
+  },
+  "technical_constraints": {
+    "browser": "File System Access API Chromium-only (Chrome/Edge 86+), requires HTTPS in production, needs user gesture for file picker",
+    "electron": "Must use secure IPC via contextBridge, all file operations in main process, native dialogs via dialog module",
+    "shared": "Single codebase must work on both platforms via abstraction layer"
+  },
+  "created_at": "2025-12-26T14:56:24.921956",
+  "updated_at": "2025-12-26T15:05:00.000000"
+}

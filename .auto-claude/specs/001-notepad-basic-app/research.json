@@ -1,0 +1,412 @@
+{
+  "integrations_researched": [
+    {
+      "name": "Electron",
+      "type": "framework",
+      "verified_package": {
+        "name": "electron",
+        "install_command": "npm install electron --save-dev",
+        "version": "latest (recommend using latest stable)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "const { app, BrowserWindow, ipcMain, dialog } = require('electron')",
+          "const { contextBridge, ipcRenderer } = require('electron')"
+        ],
+        "initialization": "app.whenReady().then(() => { createWindow() })",
+        "key_functions": [
+          "app.whenReady() - Wait for app ready",
+          "BrowserWindow() - Create windows",
+          "dialog.showOpenDialog() - Native file dialogs",
+          "dialog.showSaveDialog() - Save file dialogs",
+          "ipcMain.handle() - Handle IPC from renderer",
+          "ipcRenderer.invoke() - Call main process from renderer",
+          "contextBridge.exposeInMainWorld() - Secure API exposure"
+        ],
+        "verified_against": "Context7 MCP /electron/electron + Official GitHub docs"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["package.json with main field", "electron-builder.yml (optional for packaging)"],
+        "dependencies": [
+          "@electron-forge/cli (for packaging)",
+          "electron-builder (alternative packager)"
+        ]
+      },
+      "file_system_bridge": {
+        "description": "Electron needs to bridge browser FileSystemHandle API to Node.js fs module",
+        "main_process_apis": [
+          "dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })",
+          "dialog.showSaveDialog({ filters: [...] })",
+          "fs module for actual file I/O"
+        ],
+        "renderer_process": [
+          "Use IPC to communicate with main process",
+          "contextBridge to expose safe APIs",
+          "Can use File System Access API with special handling"
+        ],
+        "bridge_pattern": "Main process handles native file operations, renderer calls via IPC (ipcRenderer.invoke -> ipcMain.handle)"
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "requires_build_tools": true,
+        "platforms": ["Windows", "macOS", "Linux"]
+      },
+      "gotchas": [
+        "CRITICAL: contextIsolation should be enabled for security - use contextBridge, not direct ipcRenderer exposure",
+        "File System Access API in Electron requires special handling - it's available but needs session.on('file-system-access-restricted') event handler",
+        "Main process has full Node.js access, renderer is sandboxed by default (good for security)",
+        "Preload scripts run before renderer, used to safely expose APIs via contextBridge",
+        "IPC patterns: use ipcMain.handle + ipcRenderer.invoke for request/response, ipcMain.on for one-way messages",
+        "Native dialogs (dialog.showOpenDialog) are synchronous in main process but should be called asynchronously",
+        "Must specify preload script path: webPreferences: { preload: path.join(__dirname, 'preload.js') }"
+      ],
+      "research_sources": [
+        "Context7 MCP: /electron/electron",
+        "https://github.com/electron/electron/blob/main/docs/tutorial/ipc.md",
+        "https://github.com/electron/electron/blob/main/docs/api/context-bridge.md",
+        "https://github.com/electron/electron/blob/main/docs/api/dialog.md"
+      ]
+    },
+    {
+      "name": "File System Access API",
+      "type": "browser-api",
+      "verified_package": {
+        "name": "Native Browser API (no package needed)",
+        "install_command": "N/A - Built into modern browsers",
+        "version": "Web Standard",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "// No imports needed - available globally in browser"
+        ],
+        "initialization": "// Requires user gesture (e.g., button click)",
+        "key_functions": [
+          "window.showOpenFilePicker({ multiple: false, types: [...] }) - Open file picker",
+          "window.showSaveFilePicker({ suggestedName: 'file.txt' }) - Save file picker",
+          "window.showDirectoryPicker() - Directory picker",
+          "fileHandle.getFile() - Get File object from handle",
+          "fileHandle.createWritable() - Get writable stream",
+          "writableStream.write(data) - Write to file",
+          "writableStream.close() - Close stream"
+        ],
+        "verified_against": "MDN Web Docs - File System Access API"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": []
+      },
+      "browser_support": {
+        "chrome": "86+",
+        "edge": "86+",
+        "firefox": "Experimental (behind flag)",
+        "safari": "Not supported",
+        "status": "Experimental technology - not all browsers support it",
+        "requires_https": true,
+        "requires_user_gesture": true
+      },
+      "file_operations": {
+        "read_file": "const file = await fileHandle.getFile(); const text = await file.text();",
+        "write_file": "const writable = await fileHandle.createWritable(); await writable.write(text); await writable.close();",
+        "permission_model": "User grants permission via picker dialog - handles can be stored in IndexedDB"
+      },
+      "gotchas": [
+        "CRITICAL: Requires HTTPS in production (works on localhost for development)",
+        "CRITICAL: Must be triggered by user gesture (button click) - cannot auto-open on page load",
+        "Limited browser support - primarily Chromium-based browsers (Chrome, Edge)",
+        "Firefox support is experimental and behind a flag",
+        "Safari has NO support currently",
+        "FileSystemHandle objects can be serialized to IndexedDB for persistent access",
+        "Permissions are implicit - granted when user selects file via picker",
+        "Different from older File API - provides persistent file access",
+        "Synchronous access (createSyncAccessHandle) only available in Web Workers for OPFS (Origin Private File System)",
+        "File System Access API works in Electron but may trigger 'file-system-access-restricted' events that need handling"
+      ],
+      "research_sources": [
+        "https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API"
+      ]
+    },
+    {
+      "name": "Prism.js",
+      "type": "library",
+      "verified_package": {
+        "name": "prismjs",
+        "install_command": "npm install prismjs",
+        "version": "latest (v2.x recommended)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import Prism from 'prismjs'",
+          "import 'prismjs/themes/prism.css' // or other themes",
+          "import 'prismjs/components/prism-python.js' // Load specific languages"
+        ],
+        "initialization": "// Auto-highlights on DOMContentLoaded if using HTML approach",
+        "key_functions": [
+          "Prism.highlightAll() - Auto-highlight all code blocks",
+          "Prism.highlight(code, language) - Programmatic highlighting",
+          "Prism.loadLanguage(lang) - Dynamically load language grammar",
+          "Prism.loadPlugin(pluginName) - Load plugins at runtime",
+          "Prism.languages[lang] - Access language grammars"
+        ],
+        "verified_against": "Context7 MCP /prismjs/prism + GitHub README"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": [],
+        "themes": [
+          "prism.css (default)",
+          "prism-dark.css",
+          "prism-okaidia.css",
+          "prism-tomorrow.css",
+          "Many more in prismjs/prism-themes package"
+        ],
+        "plugins": [
+          "line-numbers - Show line numbers",
+          "autoloader - Auto-load language grammars",
+          "toolbar - Add toolbar to code blocks",
+          "copy-to-clipboard - Copy button"
+        ]
+      },
+      "language_detection": {
+        "automatic": false,
+        "manual_specification": "Use class='language-{lang}' on <code> element or specify lang in Prism.highlight()",
+        "file_extension_mapping": "Must implement yourself - Prism doesn't auto-detect from file extensions",
+        "note": "NO automatic language detection - you must specify the language explicitly"
+      },
+      "usage_patterns": {
+        "html_approach": "<pre><code class='language-javascript'>const x = 5;</code></pre> then call Prism.highlightAll()",
+        "programmatic_approach": "const html = Prism.highlight(code, 'javascript'); element.innerHTML = html;",
+        "dynamic_loading": "await Prism.loadLanguage('python'); then use 'python' for highlighting"
+      },
+      "gotchas": [
+        "CRITICAL: NO automatic language detection - you must specify the language",
+        "CRITICAL: Languages must be explicitly loaded - not all included by default",
+        "HTML is generated with <span> tags - CSS classes like .token, .keyword, etc.",
+        "Must load language grammars before use (use autoloader plugin or import manually)",
+        "Lightweight but requires manual language management",
+        "For file extension detection, you'll need to build your own mapping (e.g., .py -> 'python')"
+      ],
+      "research_sources": [
+        "Context7 MCP: /prismjs/prism",
+        "https://github.com/prismjs/prism"
+      ]
+    },
+    {
+      "name": "Highlight.js",
+      "type": "library",
+      "verified_package": {
+        "name": "highlight.js",
+        "install_command": "npm install highlight.js",
+        "version": "latest (11.x recommended)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import hljs from 'highlight.js'",
+          "import 'highlight.js/styles/default.css' // or other themes",
+          "import python from 'highlight.js/lib/languages/python' // Specific languages"
+        ],
+        "initialization": "hljs.highlightAll() // Auto-highlight all code blocks",
+        "key_functions": [
+          "hljs.highlightAll() - Auto-highlight all <pre><code> blocks",
+          "hljs.highlightElement(element) - Highlight specific element",
+          "hljs.highlight(code, { language: 'js' }) - Programmatic with explicit language",
+          "hljs.highlightAuto(code, [langs]) - AUTO-DETECT language",
+          "hljs.registerLanguage(name, definition) - Register custom language",
+          "hljs.listLanguages() - List all registered languages",
+          "hljs.configure(options) - Configure global options"
+        ],
+        "verified_against": "Context7 MCP /highlightjs/highlight.js + GitHub docs"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": [],
+        "themes": [
+          "default.css",
+          "github.css",
+          "monokai.css",
+          "atom-one-dark.css",
+          "vs.css",
+          "185+ themes available"
+        ]
+      },
+      "language_detection": {
+        "automatic": true,
+        "auto_detect_function": "hljs.highlightAuto(code, optionalLanguageSubset)",
+        "returns": {
+          "language": "detected language name",
+          "relevance": "confidence score",
+          "value": "highlighted HTML",
+          "secondBest": "second-best match (optional)"
+        },
+        "note": "BEST CHOICE for automatic language detection from code content",
+        "language_subset": "Can restrict detection to specific languages for better accuracy"
+      },
+      "usage_patterns": {
+        "html_approach": "<pre><code class='language-javascript'>code</code></pre> then hljs.highlightAll()",
+        "auto_detect_approach": "const result = hljs.highlightAuto(code); element.innerHTML = result.value;",
+        "explicit_language": "const result = hljs.highlight(code, { language: 'python' }); element.innerHTML = result.value;"
+      },
+      "file_extension_support": {
+        "has_built_in": false,
+        "recommendation": "Build your own mapping from file extensions to language names",
+        "example_mapping": "{ '.js': 'javascript', '.py': 'python', '.ts': 'typescript', '.md': 'markdown' }"
+      },
+      "gotchas": [
+        "ADVANTAGE: Has automatic language detection via highlightAuto()",
+        "Languages must be registered before use - common bundle includes ~40 languages",
+        "Can use lightweight 'core' build and load only needed languages",
+        "highlightAuto() can be slow on large code - consider using language subset parameter",
+        "Returns both 'language' (detected) and 'relevance' (confidence score) - use relevance to validate detection quality",
+        "For file-based detection, you still need to build extension -> language mapping yourself",
+        "CSS classes: .hljs, .hljs-keyword, .hljs-string, etc."
+      ],
+      "research_sources": [
+        "Context7 MCP: /highlightjs/highlight.js",
+        "https://github.com/highlightjs/highlight.js"
+      ]
+    },
+    {
+      "name": "Monaco Editor",
+      "type": "library",
+      "verified_package": {
+        "name": "monaco-editor",
+        "install_command": "npm install monaco-editor",
+        "version": "latest (0.50+)",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import * as monaco from 'monaco-editor'",
+          "// Requires webpack config or vite plugin for worker setup"
+        ],
+        "initialization": "monaco.editor.create(domElement, { value: code, language: 'javascript' })",
+        "key_functions": [
+          "monaco.editor.create(element, options) - Create editor instance",
+          "editor.setValue(content) - Set editor content",
+          "editor.getValue() - Get editor content",
+          "editor.setModel(model) - Set text model",
+          "monaco.editor.setTheme(themeName) - Change theme"
+        ],
+        "verified_against": "Context7 MCP /microsoft/monaco-editor + GitHub README"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": ["webpack.config.js with monaco-editor-webpack-plugin OR vite.config.js with vite-plugin-monaco-editor"],
+        "dependencies": [
+          "monaco-editor-webpack-plugin (for webpack)",
+          "vite-plugin-monaco-editor (for vite)"
+        ]
+      },
+      "features": {
+        "full_editor": true,
+        "intellisense": true,
+        "auto_complete": true,
+        "syntax_highlighting": true,
+        "language_detection": "Manual - must specify language",
+        "diff_viewer": true,
+        "themes": ["vs (light)", "vs-dark", "hc-black (high contrast)"]
+      },
+      "browser_electron_support": {
+        "browser": "Fully supported - powers VS Code for Web",
+        "electron": "Fully supported - Monaco is the editor engine of VS Code",
+        "mobile": "NOT supported",
+        "note": "BEST choice for full-featured editor experience in both browser and Electron"
+      },
+      "gotchas": [
+        "ADVANTAGE: Most powerful option - full VS Code editing experience",
+        "DISADVANTAGE: Heavyweight - large bundle size (~5-10MB)",
+        "CRITICAL: Requires webpack plugin or Vite plugin for proper worker bundling",
+        "CRITICAL: monaco.d.ts is the only public API - rest is private and may change",
+        "Workers must be configured properly for syntax checking, IntelliSense",
+        "VS Code extensions don't work directly (except pure LSP-based ones with JS language servers)",
+        "No mobile support",
+        "Language must be specified manually - no auto-detection",
+        "For Electron: works perfectly but adds significant bundle size",
+        "Best for: Full-featured code editor experience, worst for: Simple syntax highlighting"
+      ],
+      "recommendation": "Use ONLY if you need full editing features like IntelliSense, auto-complete, etc. For simple syntax highlighting, use Prism.js or Highlight.js instead.",
+      "research_sources": [
+        "Context7 MCP: /microsoft/monaco-editor",
+        "https://github.com/microsoft/monaco-editor"
+      ]
+    }
+  ],
+  "unverified_claims": [],
+  "recommendations": [
+    {
+      "category": "Syntax Highlighting Library Selection",
+      "recommendation": "Use Highlight.js",
+      "reasoning": "Highlight.js has AUTOMATIC language detection via highlightAuto(), which is critical for 'automatic syntax highlighting whenever applicable' requirement. Prism.js requires manual language specification. Monaco is overkill for this use case.",
+      "priority": "HIGH"
+    },
+    {
+      "category": "File System Abstraction Strategy",
+      "recommendation": "Create unified FileSystemHandle-like API with platform-specific implementations",
+      "reasoning": "Browser uses native File System Access API. Electron should implement compatible API via dialog.showOpenDialog/showSaveDialog + fs module, exposed through contextBridge. This keeps renderer code platform-agnostic.",
+      "priority": "HIGH"
+    },
+    {
+      "category": "Electron Security",
+      "recommendation": "Enable contextIsolation, use contextBridge for all IPC",
+      "reasoning": "Modern Electron best practice. Never expose ipcRenderer directly to renderer. Use preload scripts with contextBridge.exposeInMainWorld() for secure API exposure.",
+      "priority": "CRITICAL"
+    },
+    {
+      "category": "File Extension to Language Mapping",
+      "recommendation": "Build custom mapping object { '.js': 'javascript', '.py': 'python', ... }",
+      "reasoning": "Neither Highlight.js nor Prism.js provides file extension mapping. This must be implemented manually. Use file extension from FileSystemFileHandle.name or File.name.",
+      "priority": "MEDIUM"
+    },
+    {
+      "category": "Browser Compatibility",
+      "recommendation": "Target Chromium-based browsers for File System Access API",
+      "reasoning": "File System Access API only works in Chrome/Edge 86+. Firefox/Safari lack support. Consider fallback to traditional file input for unsupported browsers.",
+      "priority": "MEDIUM"
+    },
+    {
+      "category": "Code Sharing Architecture",
+      "recommendation": "Use shared React/Vue components with platform detection at runtime",
+      "reasoning": "Single codebase with conditional logic: if (window.electronAPI) { use Electron APIs } else { use browser APIs }. Keeps UI components identical across platforms.",
+      "priority": "MEDIUM"
+    }
+  ],
+  "critical_implementation_notes": {
+    "electron_file_system_bridge": {
+      "description": "Electron doesn't natively support File System Access API - need to bridge it",
+      "approach": "Main process: Use dialog.showOpenDialog/showSaveDialog + Node.js fs module. Preload script: Expose via contextBridge. Renderer: Call through window.electronAPI",
+      "example_api_surface": {
+        "openFile": "window.electronAPI.openFile() -> returns { handle: FileHandle-like, content: string }",
+        "saveFile": "window.electronAPI.saveFile(content, suggestedName)",
+        "readFile": "window.electronAPI.readFile(handle)",
+        "writeFile": "window.electronAPI.writeFile(handle, content)"
+      }
+    },
+    "language_detection_strategy": {
+      "step1": "Get file extension from file name (e.g., 'script.py' -> '.py')",
+      "step2": "Map extension to language name using custom mapping ({ '.py': 'python' })",
+      "step3": "If extension unknown, use hljs.highlightAuto(code) for content-based detection",
+      "step4": "Check relevance score from highlightAuto - if low, fallback to plain text",
+      "fallback": "If all else fails, display as plain text without highlighting"
+    },
+    "dual_platform_architecture": {
+      "shared": "UI components, editor logic, syntax highlighting, state management",
+      "browser_specific": "File System Access API implementation",
+      "electron_specific": "dialog module, fs module, IPC handlers, contextBridge API exposure",
+      "runtime_detection": "Check for window.electronAPI existence to determine platform"
+    }
+  },
+  "context7_libraries_used": [
+    "/electron/electron",
+    "/prismjs/prism",
+    "/highlightjs/highlight.js",
+    "/microsoft/monaco-editor"
+  ],
+  "created_at": "2025-12-26T10:30:00Z"
+}

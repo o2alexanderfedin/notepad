@@ -1,0 +1,39 @@
+{
+  "project_root": "/Users/alexanderfedin/Projects/hapyy/playground/notepad",
+  "project_type": "single",
+  "services": {
+    "notepad-app": {
+      "path": ".",
+      "tech_stack": ["javascript", "electron", "vite", "highlight.js"],
+      "targets": {
+        "browser": {
+          "port": 5173,
+          "dev_command": "npm run dev:browser",
+          "build_command": "npm run build:browser",
+          "entry_point": "src/browser/index.html"
+        },
+        "electron": {
+          "dev_command": "npm run dev:electron",
+          "build_command": "npm run build:electron",
+          "entry_point": "src/electron/main.js"
+        }
+      },
+      "test_command": "npm test"
+    }
+  },
+  "infrastructure": {
+    "docker": false,
+    "database": false,
+    "build_tools": ["vite", "electron-builder"]
+  },
+  "conventions": {
+    "linter": "eslint",
+    "formatter": "prettier",
+    "testing": "jest",
+    "git_workflow": "feature_branches"
+  },
+  "dependencies": {
+    "runtime": ["highlight.js"],
+    "dev": ["electron", "vite", "electron-builder"]
+  }
+}

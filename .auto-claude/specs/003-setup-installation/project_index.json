@@ -1,0 +1,45 @@
+{
+  "project_root": "/Users/alexanderfedin/Projects/hapyy/playground/notepad",
+  "project_type": "single",
+  "services": {
+    "main": {
+      "name": "main",
+      "path": "/Users/alexanderfedin/Projects/hapyy/playground/notepad",
+      "language": "TypeScript",
+      "framework": "React",
+      "type": "frontend",
+      "package_manager": "npm",
+      "default_port": 3000,
+      "build_tool": "Vite",
+      "state_management": "Redux",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "dependencies": [
+        "@reduxjs/toolkit",
+        "highlight.js",
+        "react",
+        "react-dom",
+        "react-redux"
+      ],
+      "dev_dependencies": [
+        "@types/node",
+        "@types/react",
+        "@types/react-dom",
+        "@vitejs/plugin-react",
+        "electron",
+        "electron-builder",
+        "tsx",
+        "typescript",
+        "vite"
+      ]
+    }
+  },
+  "infrastructure": {},
+  "conventions": {
+    "typescript": true
+  }
+}

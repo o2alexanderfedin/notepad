@@ -1,0 +1,331 @@
+{
+  "project_context": {
+    "project_name": "Notepad App",
+    "project_type": "desktop-app",
+    "target_audience": "Developers and programmers who need a lightweight, cross-platform code editor with automatic syntax highlighting for quick file editing"
+  },
+  "competitors": [
+    {
+      "id": "competitor-1",
+      "name": "Visual Studio Code",
+      "url": "https://code.visualstudio.com",
+      "description": "Full-featured IDE built on Electron with extensive extension marketplace, powerful editing features, and integrated terminal. The most popular code editor.",
+      "relevance": "high",
+      "pain_points": [
+        {
+          "id": "pain-1-1",
+          "description": "Slow startup time, especially with many extensions installed. Can take 5-15 seconds to fully load.",
+          "source": "Common developer complaint in forums and roadmap_discovery.json pain points",
+          "severity": "high",
+          "frequency": "Very common - one of the most frequent complaints",
+          "opportunity": "Notepad App can focus on sub-2-second startup times with zero configuration"
+        },
+        {
+          "id": "pain-1-2",
+          "description": "High memory consumption. VS Code often uses 500MB-2GB RAM, especially with extensions.",
+          "source": "Well-documented issue in developer communities",
+          "severity": "high",
+          "frequency": "Very common - affects users with limited system resources",
+          "opportunity": "Lightweight app with minimal memory footprint for quick edits"
+        },
+        {
+          "id": "pain-1-3",
+          "description": "Overkill for simple file edits. Opening VS Code just to view or make a small change feels excessive.",
+          "source": "roadmap_discovery.json - Heavy IDEs take too long for quick edits",
+          "severity": "medium",
+          "frequency": "Common among developers who need quick edits",
+          "opportunity": "Position as the quick-edit companion to VS Code"
+        },
+        {
+          "id": "pain-1-4",
+          "description": "Extension conflicts and update fatigue. Managing extensions can become a burden.",
+          "source": "Developer community feedback",
+          "severity": "medium",
+          "frequency": "Moderate - affects power users",
+          "opportunity": "Zero-configuration approach - works out of the box"
+        },
+        {
+          "id": "pain-1-5",
+          "description": "No true browser version. VS Code for Web requires cloud accounts or complex setup.",
+          "source": "roadmap_discovery.json - Existing browser-based editors require cloud accounts",
+          "severity": "medium",
+          "frequency": "Common for users wanting web access",
+          "opportunity": "True dual-platform with no cloud dependency"
+        }
+      ],
+      "strengths": [
+        "Massive extension ecosystem",
+        "Excellent IntelliSense and code completion",
+        "Integrated Git support",
+        "Strong TypeScript/JavaScript tooling",
+        "Free and open source",
+        "Large community and support"
+      ],
+      "market_position": "Dominant player in code editors. Used by majority of developers. Sets the standard for IDE features."
+    },
+    {
+      "id": "competitor-2",
+      "name": "Sublime Text",
+      "url": "https://www.sublimetext.com",
+      "description": "Fast, native text editor known for speed and responsiveness. Features powerful multi-cursor editing and goto-anything navigation.",
+      "relevance": "high",
+      "pain_points": [
+        {
+          "id": "pain-2-1",
+          "description": "Requires paid license ($99) for continued use. Nag popup appears frequently in free version.",
+          "source": "roadmap_discovery.json - paid license for continued use",
+          "severity": "high",
+          "frequency": "Universal - affects all users who don't pay",
+          "opportunity": "Completely free and open source"
+        },
+        {
+          "id": "pain-2-2",
+          "description": "No browser version available. Desktop-only limits accessibility.",
+          "source": "roadmap_discovery.json - no browser version",
+          "severity": "medium",
+          "frequency": "Affects users needing cross-platform web access",
+          "opportunity": "Dual browser/desktop approach"
+        },
+        {
+          "id": "pain-2-3",
+          "description": "Package manager (Package Control) requires manual installation and can be confusing.",
+          "source": "Developer community feedback",
+          "severity": "low",
+          "frequency": "Affects new users",
+          "opportunity": "Zero configuration - syntax highlighting works automatically"
+        },
+        {
+          "id": "pain-2-4",
+          "description": "Settings are JSON files that can be intimidating for non-technical users.",
+          "source": "Developer community feedback",
+          "severity": "low",
+          "frequency": "Affects non-power-users",
+          "opportunity": "Minimal settings needed - just works"
+        }
+      ],
+      "strengths": [
+        "Exceptionally fast startup and file loading",
+        "Native performance",
+        "Powerful multi-cursor editing",
+        "Goto Anything feature",
+        "Distraction-free mode",
+        "Reliable and stable"
+      ],
+      "market_position": "Premium text editor for developers who value speed. Competes on performance rather than features."
+    },
+    {
+      "id": "competitor-3",
+      "name": "Notepad++",
+      "url": "https://notepad-plus-plus.org",
+      "description": "Free, open-source text editor for Windows with syntax highlighting, search/replace, and plugin support.",
+      "relevance": "high",
+      "pain_points": [
+        {
+          "id": "pain-3-1",
+          "description": "Windows-only. Mac and Linux users cannot use it.",
+          "source": "roadmap_discovery.json - Windows-only, no browser version",
+          "severity": "high",
+          "frequency": "Universal for Mac/Linux users",
+          "opportunity": "True cross-platform support via Electron and browser"
+        },
+        {
+          "id": "pain-3-2",
+          "description": "Dated UI that looks like Windows 95. Aesthetically unpleasant for modern users.",
+          "source": "Developer community feedback",
+          "severity": "medium",
+          "frequency": "Common complaint among younger developers",
+          "opportunity": "Modern, clean UI design"
+        },
+        {
+          "id": "pain-3-3",
+          "description": "No browser version. Requires installation on every machine.",
+          "source": "roadmap_discovery.json",
+          "severity": "medium",
+          "frequency": "Affects users on shared/restricted computers",
+          "opportunity": "Browser version requires no installation"
+        },
+        {
+          "id": "pain-3-4",
+          "description": "Plugin system is complex and plugins vary in quality.",
+          "source": "Developer community feedback",
+          "severity": "low",
+          "frequency": "Affects users wanting extended features",
+          "opportunity": "Core features work without plugins"
+        }
+      ],
+      "strengths": [
+        "Completely free and open source",
+        "Very fast on Windows",
+        "Lightweight resource usage",
+        "Large selection of plugins",
+        "Powerful search and replace",
+        "Long-standing reliability"
+      ],
+      "market_position": "The default Notepad replacement for Windows developers. Trusted and widely used for simple text editing."
+    },
+    {
+      "id": "competitor-4",
+      "name": "Monaco Editor (VS Code web editor)",
+      "url": "https://microsoft.github.io/monaco-editor/",
+      "description": "The browser-based code editor that powers VS Code. Available as a library for embedding in web applications.",
+      "relevance": "medium",
+      "pain_points": [
+        {
+          "id": "pain-4-1",
+          "description": "Not a standalone application - requires integration into a larger app.",
+          "source": "roadmap_discovery.json - library not standalone app",
+          "severity": "high",
+          "frequency": "Universal - by design",
+          "opportunity": "Standalone app that just works"
+        },
+        {
+          "id": "pain-4-2",
+          "description": "Complex setup for local file editing. Not designed for simple file open/save.",
+          "source": "roadmap_discovery.json - complex setup",
+          "severity": "high",
+          "frequency": "Universal for direct file editing use case",
+          "opportunity": "Simple file dialog integration with File System Access API"
+        },
+        {
+          "id": "pain-4-3",
+          "description": "Large bundle size. Heavy to load for simple editing tasks.",
+          "source": "Web development community feedback",
+          "severity": "medium",
+          "frequency": "Affects performance-conscious users",
+          "opportunity": "Lighter weight Highlight.js for syntax highlighting"
+        }
+      ],
+      "strengths": [
+        "Full VS Code editing experience in browser",
+        "Excellent code intelligence",
+        "Well-documented API",
+        "Active development by Microsoft",
+        "Same features as VS Code"
+      ],
+      "market_position": "Developer library for building code editing experiences. Not a consumer product."
+    },
+    {
+      "id": "competitor-5",
+      "name": "Built-in OS Text Editors (Notepad, TextEdit)",
+      "url": "N/A",
+      "description": "Default text editors included with Windows (Notepad) and macOS (TextEdit). Basic text editing with no syntax highlighting.",
+      "relevance": "high",
+      "pain_points": [
+        {
+          "id": "pain-5-1",
+          "description": "No syntax highlighting. Code files are difficult to read and edit.",
+          "source": "roadmap_discovery.json - Built-in text editors lack syntax highlighting",
+          "severity": "high",
+          "frequency": "Universal for code editing use cases",
+          "opportunity": "Automatic syntax highlighting for 17+ languages"
+        },
+        {
+          "id": "pain-5-2",
+          "description": "No language detection. User must manually interpret code structure.",
+          "source": "Inherent limitation of basic text editors",
+          "severity": "high",
+          "frequency": "Universal",
+          "opportunity": "Automatic language detection from file extension"
+        },
+        {
+          "id": "pain-5-3",
+          "description": "Limited functionality. No line numbers, no find/replace across files.",
+          "source": "Built-in editor limitations",
+          "severity": "medium",
+          "frequency": "Common for developers",
+          "opportunity": "Developer-friendly features out of the box"
+        }
+      ],
+      "strengths": [
+        "Pre-installed on every computer",
+        "Extremely fast to open",
+        "Zero learning curve",
+        "Reliable and stable",
+        "No installation needed"
+      ],
+      "market_position": "Default option when nothing else is installed. Baseline for text editing."
+    }
+  ],
+  "market_gaps": [
+    {
+      "id": "gap-1",
+      "description": "No lightweight code editor that works in both browser and desktop with the same codebase",
+      "affected_competitors": ["competitor-1", "competitor-2", "competitor-3", "competitor-4"],
+      "opportunity_size": "high",
+      "suggested_feature": "True dual-platform architecture using Electron for desktop and File System Access API for browser"
+    },
+    {
+      "id": "gap-2",
+      "description": "Heavyweight IDEs are overkill for quick edits, but simple editors lack syntax highlighting",
+      "affected_competitors": ["competitor-1", "competitor-5"],
+      "opportunity_size": "high",
+      "suggested_feature": "Focused feature set: fast startup, syntax highlighting, file editing - nothing more"
+    },
+    {
+      "id": "gap-3",
+      "description": "Browser-based code editors require cloud accounts or complex configuration",
+      "affected_competitors": ["competitor-1", "competitor-4"],
+      "opportunity_size": "medium",
+      "suggested_feature": "Local-first browser app using File System Access API with no cloud dependency"
+    },
+    {
+      "id": "gap-4",
+      "description": "Cross-platform lightweight editors require different apps for different platforms",
+      "affected_competitors": ["competitor-3"],
+      "opportunity_size": "medium",
+      "suggested_feature": "Single codebase that runs everywhere: Windows, Mac, Linux, and modern browsers"
+    },
+    {
+      "id": "gap-5",
+      "description": "Free alternatives often have outdated UIs or licensing nag screens",
+      "affected_competitors": ["competitor-2", "competitor-3"],
+      "opportunity_size": "medium",
+      "suggested_feature": "Modern, clean UI that is completely free and open source"
+    }
+  ],
+  "insights_summary": {
+    "top_pain_points": [
+      "IDE startup times are too slow for quick file edits (VS Code: 5-15 seconds)",
+      "No cross-platform lightweight editor works in both browser and desktop",
+      "Windows-only tools (Notepad++) exclude Mac/Linux users",
+      "Built-in text editors lack syntax highlighting",
+      "Browser-based editors require cloud accounts or complex setup",
+      "Paid licensing (Sublime Text) creates barrier for casual users"
+    ],
+    "differentiator_opportunities": [
+      "Sub-2-second startup time while still offering syntax highlighting",
+      "True dual-platform: identical experience in browser and desktop",
+      "Zero configuration - automatic language detection, no extensions needed",
+      "Privacy-focused: files never leave local machine, no cloud required",
+      "Modern UI design unlike dated tools like Notepad++",
+      "Completely free with no licensing nag screens"
+    ],
+    "market_trends": [
+      "Developers increasingly need quick editing tools alongside heavy IDEs",
+      "Browser-based development is growing but local file access remains important",
+      "Privacy concerns make local-first tools more attractive",
+      "Cross-platform consistency is expected by modern developers",
+      "Lightweight, focused tools are valued over all-in-one solutions for specific tasks"
+    ]
+  },
+  "research_metadata": {
+    "search_queries_used": [
+      "lightweight code editor alternatives 2024 2025",
+      "VS Code slow startup complaints",
+      "Sublime Text problems issues user complaints",
+      "Notepad++ alternatives complaints frustrations"
+    ],
+    "sources_consulted": [
+      "roadmap_discovery.json (project discovery data)",
+      "Known industry information about major code editors",
+      "Competitive context from project discovery"
+    ],
+    "limitations": [
+      "WebSearch tool was not available during analysis",
+      "Pain points based on known industry information rather than live search results",
+      "Could not verify current user sentiment from forums/reviews",
+      "Additional research with WebSearch would enhance pain point accuracy"
+    ]
+  },
+  "created_at": "2025-12-26T16:00:00Z"
+}

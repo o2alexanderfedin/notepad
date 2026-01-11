@@ -1,0 +1,87 @@
+{
+  "project_root": "/Users/alexanderfedin/Projects/hapyy/playground/notepad",
+  "project_type": "single",
+  "services": {
+    "main": {
+      "name": "main",
+      "path": "/Users/alexanderfedin/Projects/hapyy/playground/notepad",
+      "language": "TypeScript",
+      "framework": "React",
+      "type": "frontend",
+      "package_manager": "npm",
+      "default_port": 3000,
+      "build_tool": "Vite",
+      "state_management": "Redux",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "dependencies": [
+        "@reduxjs/toolkit",
+        "highlight.js",
+        "react",
+        "react-dom",
+        "react-redux"
+      ],
+      "dev_dependencies": [
+        "@types/node",
+        "@types/react",
+        "@types/react-dom",
+        "@vitejs/plugin-react",
+        "electron",
+        "electron-builder",
+        "tsx",
+        "typescript",
+        "vite"
+      ],
+      "environment": {
+        "variables": {
+          "CSC_LINK": {
+            "value": null,
+            "source": ".env.example",
+            "type": "string",
+            "sensitive": false,
+            "required": true
+          },
+          "CSC_KEY_PASSWORD": {
+            "value": null,
+            "source": ".env.example",
+            "type": "string",
+            "sensitive": true,
+            "required": true
+          },
+          "APPLE_ID": {
+            "value": null,
+            "source": ".env.example",
+            "type": "string",
+            "sensitive": false,
+            "required": true
+          },
+          "APPLE_APP_SPECIFIC_PASSWORD": {
+            "value": null,
+            "source": ".env.example",
+            "type": "string",
+            "sensitive": true,
+            "required": true
+          },
+          "APPLE_TEAM_ID": {
+            "value": null,
+            "source": ".env.example",
+            "type": "string",
+            "sensitive": false,
+            "required": true
+          }
+        },
+        "required_count": 5,
+        "optional_count": 0,
+        "detected_count": 5
+      }
+    }
+  },
+  "infrastructure": {},
+  "conventions": {
+    "typescript": true
+  }
+}

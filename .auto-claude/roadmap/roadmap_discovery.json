@@ -1,0 +1,122 @@
+{
+  "project_name": "Notepad App",
+  "project_type": "desktop-app",
+  "tech_stack": {
+    "primary_language": "JavaScript",
+    "frameworks": ["Electron", "Vite"],
+    "key_dependencies": ["highlight.js", "electron", "vite", "electron-builder"]
+  },
+  "target_audience": {
+    "primary_persona": "Developers and programmers who need a lightweight, cross-platform code editor with automatic syntax highlighting for quick file editing",
+    "secondary_personas": [
+      "Technical writers editing markdown and documentation files",
+      "System administrators editing configuration files (YAML, JSON, shell scripts)",
+      "Students learning to code who want a simple, non-intimidating editor",
+      "Power users who want a fast notepad alternative with syntax highlighting"
+    ],
+    "pain_points": [
+      "Heavy IDEs (like VSCode/IntelliJ) take too long to start for quick edits",
+      "Built-in text editors (Notepad, TextEdit) lack syntax highlighting",
+      "Want to view/edit code files directly in the browser without installing software",
+      "Need a consistent editing experience across desktop and web",
+      "Existing browser-based editors require cloud accounts or complex setup"
+    ],
+    "goals": [
+      "Quickly open and edit code files with syntax highlighting",
+      "Use the same familiar interface in browser and desktop",
+      "Access files from local file system without uploading to cloud",
+      "Identify programming language automatically without manual selection",
+      "Have a minimal, distraction-free editing experience"
+    ],
+    "usage_context": "Quick file editing sessions - opening a config file, making small code changes, viewing source code with highlighting. Used when full IDE is overkill. Desktop version for regular use, browser version for ad-hoc access on shared computers or when software installation isn't possible."
+  },
+  "product_vision": {
+    "one_liner": "A lightweight, dual-platform notepad with automatic syntax highlighting that runs seamlessly in both browser and desktop.",
+    "problem_statement": "Developers frequently need to quickly view or edit code files, but face a choice between slow, heavyweight IDEs or basic text editors without syntax highlighting. Existing lightweight editors are often platform-specific and don't offer browser-based access.",
+    "value_proposition": "Zero-friction code editing with automatic language detection and syntax highlighting, available instantly in any modern browser or as a native desktop app - no cloud accounts, no complex setup, just fast local file editing.",
+    "success_metrics": [
+      "Application loads in under 2 seconds",
+      "Files up to 1MB open and display syntax highlighting within 1 second",
+      "Supports 10+ programming languages with automatic detection",
+      "Works identically in Chrome/Edge browser and Electron desktop app",
+      "Zero user configuration required for basic functionality"
+    ]
+  },
+  "current_state": {
+    "maturity": "prototype",
+    "existing_features": [
+      "File system abstraction layer (BrowserFileSystem and ElectronFileSystem adapters)",
+      "Syntax highlighting with Highlight.js (17+ languages registered)",
+      "Browser app with Open/Save/Save As functionality",
+      "File extension-based language detection",
+      "Debounced live syntax highlighting during typing",
+      "Cursor position tracking",
+      "Modified file indicator",
+      "Keyboard shortcuts (Ctrl+O, Ctrl+S, Ctrl+Shift+S)",
+      "Unsaved changes warning before page close",
+      "Loading overlay for file operations",
+      "Electron main process with IPC handlers",
+      "Secure preload script with contextBridge",
+      "Preview panel toggle for syntax highlighted view"
+    ],
+    "known_gaps": [
+      "No comprehensive test suite implemented yet",
+      "E2E verification on both platforms not completed",
+      "Browser unsupported warning UI may need polish",
+      "No error boundary handling for syntax highlighting failures",
+      "Large file handling (10MB+) not optimized",
+      "No recent files or session history"
+    ],
+    "technical_debt": [
+      "Test infrastructure needs setup (no test directory or test commands configured)",
+      "Build configurations for production not fully verified",
+      "Electron app packaging with electron-builder untested",
+      "No CI/CD pipeline configured"
+    ]
+  },
+  "competitive_context": {
+    "alternatives": [
+      "Visual Studio Code - Full-featured IDE, heavy but powerful",
+      "Sublime Text - Fast, native, but paid license for continued use",
+      "Notepad++ - Windows-only, native, no browser version",
+      "Atom (discontinued) - Was similar concept but heavier",
+      "Monaco Editor (online) - Browser-based but complex setup",
+      "CodeMirror (online) - Browser-based, library not standalone app",
+      "TextEdit/Notepad (OS built-in) - Simple but no syntax highlighting"
+    ],
+    "differentiators": [
+      "True dual-platform: same codebase runs in browser AND as desktop app",
+      "Zero configuration - works out of the box with auto language detection",
+      "No cloud account required - local file system access only",
+      "Lightweight startup - faster than full IDEs",
+      "Privacy-focused - files never leave local machine",
+      "Modern browser API usage (File System Access API) for native-like experience"
+    ],
+    "market_position": "Positioned as a 'lightweight middle ground' between basic text editors and full IDEs. Targets developers who want quick file editing with syntax highlighting without the overhead of a complete IDE. The dual-platform approach is unique - most alternatives are either browser-only or desktop-only.",
+    "competitor_pain_points": [],
+    "competitor_analysis_available": false
+  },
+  "constraints": {
+    "technical": [
+      "File System Access API only works in Chromium browsers (Chrome, Edge) - Firefox/Safari users need Electron version",
+      "Electron requires Node.js integration with security considerations (contextIsolation must be enabled)",
+      "Highlight.js auto-detection may be inaccurate for small code snippets",
+      "Large files (10MB+) may cause performance issues with syntax highlighting",
+      "Browser version requires HTTPS in production for File System Access API"
+    ],
+    "resources": [
+      "Solo developer project (single git contributor)",
+      "Greenfield project - building from scratch without existing codebase to leverage",
+      "Limited to MIT-licensed dependencies",
+      "No dedicated QA team - testing relies on automated tests"
+    ],
+    "dependencies": [
+      "highlight.js v11.9+ for syntax highlighting",
+      "Electron v28+ for desktop packaging",
+      "Vite v5+ for browser bundling and dev server",
+      "electron-builder v24+ for production builds",
+      "Modern browser with File System Access API support for full browser functionality"
+    ]
+  },
+  "created_at": "2025-12-26T15:45:00Z"
+}

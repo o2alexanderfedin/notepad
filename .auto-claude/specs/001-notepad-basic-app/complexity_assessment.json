@@ -1,0 +1,73 @@
+{
+  "complexity": "complex",
+  "workflow_type": "feature",
+  "confidence": 0.85,
+  "reasoning": "Dual-platform application (browser + Electron) with FileSystemHandle API abstraction requires significant architectural planning, research into polyfill strategies, and careful build tooling setup. This is a greenfield project with multiple technical decisions and cross-cutting concerns.",
+
+  "analysis": {
+    "scope": {
+      "estimated_files": 15,
+      "estimated_services": 2,
+      "is_cross_cutting": true,
+      "notes": "Greenfield dual-platform app. Needs separate entry points, shared UI components, platform-specific file system handlers, Electron main process, build configs. File system abstraction layer touches multiple components."
+    },
+    "integrations": {
+      "external_services": [],
+      "new_dependencies": ["electron", "syntax-highlighting-library", "build-tooling"],
+      "research_needed": true,
+      "notes": "Must research: (1) syntax highlighting library that works in both browser and Node.js environments (Prism.js vs highlight.js vs Monaco), (2) FileSystemHandle polyfill strategy for Electron, (3) dual-build architecture (webpack/vite/rollup configuration)"
+    },
+    "infrastructure": {
+      "docker_changes": false,
+      "database_changes": false,
+      "config_changes": true,
+      "notes": "Requires build configuration for dual targets (browser + Electron), Electron-specific configs (main.js, preload scripts, IPC), and potentially different bundling strategies per platform"
+    },
+    "knowledge": {
+      "patterns_exist": false,
+      "research_required": true,
+      "unfamiliar_tech": ["FileSystemHandle API", "Electron integration with modern web APIs", "dual-platform build strategies"],
+      "notes": "FileSystemHandle is a relatively new browser API. Creating a compatible abstraction for Electron requires research. No existing patterns in this playground project."
+    },
+    "risk": {
+      "level": "medium",
+      "concerns": [
+        "Browser API compatibility (FileSystemHandle not supported in Safari/Firefox)",
+        "Electron polyfill complexity for FileSystemHandle",
+        "Performance with syntax highlighting on large files",
+        "Build complexity for maintaining dual targets",
+        "State management for file handles and permissions"
+      ],
+      "notes": "Architectural decisions will have long-term impact. Need to ensure file system abstraction is robust and maintainable. Performance considerations for large files with real-time syntax highlighting."
+    }
+  },
+
+  "recommended_phases": [
+    "discovery",
+    "requirements",
+    "research",
+    "context",
+    "spec_writing",
+    "self_critique",
+    "planning",
+    "validation"
+  ],
+
+  "flags": {
+    "needs_research": true,
+    "needs_self_critique": true,
+    "needs_infrastructure_setup": true
+  },
+
+  "validation_recommendations": {
+    "risk_level": "medium",
+    "skip_validation": false,
+    "minimal_mode": false,
+    "test_types_required": ["unit", "integration", "e2e"],
+    "security_scan_required": false,
+    "staging_deployment_required": false,
+    "reasoning": "Dual-platform application requires comprehensive testing: unit tests for file system abstraction and editor logic, integration tests for file operations, and E2E tests for both browser and Electron environments. No security-sensitive operations (no auth, payments, or user data storage)."
+  },
+
+  "created_at": "2025-12-26T00:00:00Z"
+}

@@ -1,0 +1,430 @@
+{
+  "integrations_researched": [
+    {
+      "name": "electron-builder",
+      "type": "library",
+      "verified_package": {
+        "name": "electron-builder",
+        "install_command": "npm install --save-dev electron-builder",
+        "version": "^24.9.0",
+        "verified": true,
+        "current_status": "Already installed in project"
+      },
+      "api_patterns": {
+        "imports": [
+          "const builder = require('electron-builder')",
+          "const Platform = builder.Platform"
+        ],
+        "initialization": "Not required for CLI usage; Configuration via package.json or electron-builder.yml",
+        "key_functions": [
+          "builder.build({ targets, config })",
+          "Platform.MAC.createTarget()",
+          "CLI: electron-builder --mac --target dmg",
+          "CLI: electron-builder --mac --target pkg"
+        ],
+        "configuration_formats": [
+          "package.json (build key)",
+          "electron-builder.yml (YAML)",
+          "electron-builder.config.js (JavaScript/TypeScript)",
+          "electron-builder.json5 (JSON5)",
+          "electron-builder.toml (TOML - requires toml package)"
+        ],
+        "verified_against": "Context7 MCP: /electron-userland/electron-builder"
+      },
+      "configuration": {
+        "env_vars": [
+          "CSC_LINK (path to .p12 certificate for code signing)",
+          "CSC_KEY_PASSWORD (certificate password)",
+          "APPLE_ID (Apple ID for notarization)",
+          "APPLE_APP_SPECIFIC_PASSWORD (app-specific password)",
+          "APPLE_TEAM_ID (Apple Developer Team ID)",
+          "ELECTRON_CACHE (cache directory)",
+          "ELECTRON_BUILDER_CACHE (builder cache directory)"
+        ],
+        "config_files": [
+          "package.json - build section",
+          "electron-builder.yml (recommended)",
+          "build/entitlements.mac.plist (entitlements)",
+          "build/entitlements.loginhelper.plist (login helper entitlements)",
+          "build/icon.icns (macOS icon)"
+        ],
+        "dependencies": [
+          "electron (already installed: ^28.0.0)",
+          "@electron/osx-sign (bundled with electron-builder)",
+          "@electron/notarize (bundled with electron-builder)"
+        ],
+        "mac_targets": [
+          "dmg (default - disk image)",
+          "pkg (installer package)",
+          "zip (ZIP archive)",
+          "mas (Mac App Store)",
+          "mas-dev (Mac App Store Development)"
+        ],
+        "mac_configuration_options": {
+          "required": {
+            "appId": "Unique application identifier (e.g., com.company.app)",
+            "category": "macOS app category (e.g., public.app-category.developer-tools)"
+          },
+          "recommended": {
+            "icon": "Path to .icns file (build/icon.icns)",
+            "target": "Array of targets (dmg, pkg, zip)",
+            "hardenedRuntime": "true (required for notarization)",
+            "gatekeeperAssess": "false (disable Gatekeeper assessment)"
+          },
+          "code_signing": {
+            "identity": "Developer ID Application: Your Name (TEAM_ID)",
+            "entitlements": "build/entitlements.mac.plist",
+            "entitlementsInherit": "build/entitlements.mac.plist"
+          },
+          "notarization": {
+            "notarize": {
+              "teamId": "YOUR_TEAM_ID"
+            }
+          }
+        }
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "platform_requirements": "Can build on macOS, Linux (via Docker), Windows",
+        "ci_cd_support": [
+          "GitHub Actions",
+          "Travis CI",
+          "CircleCI",
+          "AppVeyor"
+        ]
+      },
+      "gotchas": [
+        "Code signing is MANDATORY for distribution on macOS to avoid Gatekeeper warnings",
+        "Notarization is REQUIRED for macOS 10.15+ (Catalina and later)",
+        "Must use hardenedRuntime: true for notarization",
+        "Apps signed for Mac App Store (mas) won't run locally without modifications",
+        "Need Apple Developer account ($99/year) for code signing certificates",
+        "Environment variables (CSC_LINK, APPLE_ID, etc.) should be set for automated builds",
+        "Icon must be in .icns format for macOS (not .png or .ico)",
+        "Default target is DMG if not specified",
+        "Building on non-macOS requires Docker or CI/CD",
+        "Deep signing (--deep) should only be applied to specific files, not entire app"
+      ],
+      "research_sources": [
+        "Context7 MCP: /electron-userland/electron-builder",
+        "https://github.com/electron-userland/electron-builder",
+        "https://www.electron.build/"
+      ]
+    },
+    {
+      "name": "@electron/osx-sign",
+      "type": "library",
+      "verified_package": {
+        "name": "@electron/osx-sign",
+        "install_command": "npm install --save-dev @electron/osx-sign",
+        "version": "latest",
+        "verified": true,
+        "current_status": "Bundled with electron-builder; standalone installation optional"
+      },
+      "api_patterns": {
+        "imports": [
+          "import { sign } from '@electron/osx-sign'",
+          "import { flat } from '@electron/osx-sign'"
+        ],
+        "initialization": "Direct function calls",
+        "key_functions": [
+          "sign({ app: 'path/to/my.app', ...options })",
+          "flat({ app: 'path/to/my.app' })",
+          "CLI: npx electron-osx-sign path/to/my.app",
+          "CLI: npx electron-osx-flat path/to/my.app"
+        ],
+        "verified_against": "Context7 MCP: /electron/osx-sign"
+      },
+      "configuration": {
+        "sign_options": {
+          "app": "Path to .app bundle (required)",
+          "platform": "mas | darwin (auto-detected)",
+          "type": "development | distribution (default: distribution)",
+          "identity": "Code signing identity (certificate name or SHA-1)",
+          "provisioningProfile": "Path to .provisionprofile file",
+          "keychain": "Keychain to use (default: system default)",
+          "hardenedRuntime": "Enable hardened runtime (required for notarization)",
+          "entitlements": "Path to entitlements.plist",
+          "optionsForFile": "Callback function for file-specific signing options",
+          "binaries": "Array of additional binaries to sign",
+          "version": "Electron version (for legacy builds)"
+        },
+        "flat_options": {
+          "app": "Path to .app bundle (required)",
+          "pkg": "Output .pkg path (optional)",
+          "identity": "Installer signing identity"
+        },
+        "env_vars": [],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "platform_requirements": "macOS only (uses native codesign and productbuild)"
+      },
+      "gotchas": [
+        "Only works on macOS (uses native codesign utility)",
+        "Apps signed with type='distribution' for MAS won't run locally",
+        "Deep signing (--deep) is unsafe for entire app; use optionsForFile for specific files",
+        "Migrating from legacy electron-osx-sign: use optionsForFile instead of entitlements-inherit",
+        "Must have valid Apple Developer certificates installed in Keychain",
+        "CLI offers less features than JavaScript API"
+      ],
+      "research_sources": [
+        "Context7 MCP: /electron/osx-sign",
+        "https://github.com/electron/osx-sign"
+      ]
+    },
+    {
+      "name": "@electron/notarize",
+      "type": "library",
+      "verified_package": {
+        "name": "@electron/notarize",
+        "install_command": "npm install --save-dev @electron/notarize",
+        "version": "latest",
+        "verified": true,
+        "current_status": "Bundled with electron-builder; standalone installation optional"
+      },
+      "api_patterns": {
+        "imports": [
+          "import { notarize } from '@electron/notarize'"
+        ],
+        "initialization": "Called after app signing, before packaging",
+        "key_functions": [
+          "notarize({ appPath, appleId, appleIdPassword, teamId })"
+        ],
+        "verified_against": "electron-builder documentation"
+      },
+      "configuration": {
+        "env_vars": [
+          "APPLE_ID (Apple ID email)",
+          "APPLE_APP_SPECIFIC_PASSWORD (app-specific password, NOT Apple ID password)",
+          "APPLE_TEAM_ID (10-character team ID)"
+        ],
+        "requirements": [
+          "Valid Apple Developer account",
+          "App signed with Developer ID Application certificate",
+          "hardenedRuntime: true enabled",
+          "Valid entitlements.plist"
+        ],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "platform_requirements": "macOS only (submits to Apple notarization service)"
+      },
+      "gotchas": [
+        "Requires app-specific password, NOT regular Apple ID password",
+        "Can take 5-15 minutes for Apple to process notarization",
+        "Must enable hardenedRuntime: true for notarization to succeed",
+        "Notarization is REQUIRED for macOS 10.15+ (Catalina and later)",
+        "Failure will only be visible in Apple's response; check logs carefully",
+        "electron-builder handles notarization automatically if configured"
+      ],
+      "research_sources": [
+        "Context7 MCP: /electron-userland/electron-builder (notarization section)",
+        "https://github.com/electron/notarize"
+      ]
+    },
+    {
+      "name": "Electron",
+      "type": "framework",
+      "verified_package": {
+        "name": "electron",
+        "install_command": "npm install --save-dev electron",
+        "version": "^28.0.0",
+        "verified": true,
+        "current_status": "Already installed in project"
+      },
+      "api_patterns": {
+        "imports": [
+          "const { app, BrowserWindow } = require('electron')",
+          "import { app, BrowserWindow } from 'electron'"
+        ],
+        "initialization": "app.whenReady().then(() => { ... })",
+        "key_functions": [
+          "app.whenReady()",
+          "new BrowserWindow({ width, height, webPreferences })",
+          "app.on('window-all-closed', ...)",
+          "app.on('activate', ...)"
+        ],
+        "verified_against": "Context7 MCP: /websites/electronjs"
+      },
+      "configuration": {
+        "env_vars": [
+          "ELECTRON_CACHE (electron binary cache directory)",
+          "ELECTRON_MIRROR (mirror URL for electron downloads)"
+        ],
+        "config_files": [
+          "package.json (main field points to main process file)",
+          "src/electron/main.ts (main process entry point)"
+        ],
+        "dependencies": [
+          "Node.js (bundled)",
+          "Chromium (bundled)"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "platform_requirements": "Cross-platform (macOS, Windows, Linux)"
+      },
+      "gotchas": [
+        "Version 28.0.0 is installed; ensure electron-builder supports this version",
+        "Main process file must be specified in package.json 'main' field",
+        "Renderer process is separate from main process (IPC required for communication)",
+        "Native modules may need rebuilding for Electron's Node.js version"
+      ],
+      "research_sources": [
+        "Context7 MCP: /websites/electronjs",
+        "Context7 MCP: /electron/electron",
+        "https://www.electronjs.org/"
+      ]
+    },
+    {
+      "name": "DMG Builder (built into electron-builder)",
+      "type": "build_target",
+      "verified_package": {
+        "name": "dmg-builder",
+        "install_command": "Bundled with electron-builder",
+        "version": "Bundled",
+        "verified": true,
+        "current_status": "Available via electron-builder"
+      },
+      "api_patterns": {
+        "configuration": "Via electron-builder config: mac.target = ['dmg']",
+        "key_options": [
+          "contents (DMG window layout)",
+          "background (background image)",
+          "icon (volume icon)",
+          "iconSize (icon size in DMG window)",
+          "window (DMG window size and position)",
+          "format (UDZO, UDBZ, ULFO - default: UDZO)"
+        ],
+        "verified_against": "electron-builder documentation"
+      },
+      "configuration": {
+        "dmg_options": {
+          "title": "Application name for DMG volume",
+          "icon": "Volume icon (.icns)",
+          "background": "Background image for DMG window",
+          "contents": "Array of file positions in DMG window",
+          "window": "DMG window size { width, height, x, y }",
+          "iconSize": "Icon size (default: 80)",
+          "format": "UDZO (compressed), UDBZ (bzip2), ULFO (lzfse)"
+        }
+      },
+      "gotchas": [
+        "DMG is the default target on macOS if not specified",
+        "Background image should be @2x for Retina displays",
+        "DMG creation requires macOS (or Docker with macOS tools)",
+        "Contents positioning can be tricky; use Electron Forge defaults initially"
+      ],
+      "research_sources": [
+        "Context7 MCP: /electron-userland/electron-builder",
+        "https://www.electron.build/configuration/dmg"
+      ]
+    },
+    {
+      "name": "PKG Builder (built into electron-builder)",
+      "type": "build_target",
+      "verified_package": {
+        "name": "Built into electron-builder via productbuild",
+        "install_command": "Bundled with electron-builder",
+        "version": "Bundled",
+        "verified": true,
+        "current_status": "Available via electron-builder"
+      },
+      "api_patterns": {
+        "configuration": "Via electron-builder config: mac.target = ['pkg']",
+        "key_options": [
+          "identity (installer signing identity)",
+          "scripts (pre/postinstall scripts)",
+          "installLocation (installation path)",
+          "allowAnywhere (allow installation anywhere)",
+          "allowCurrentUserHome (allow user home installation)",
+          "allowRootDirectory (allow root directory installation)"
+        ],
+        "verified_against": "Context7 MCP: /electron-userland/electron-builder"
+      },
+      "configuration": {
+        "pkg_options": {
+          "identity": "Developer ID Installer: Your Name (TEAM_ID)",
+          "scripts": "Path to pre/postinstall scripts directory",
+          "installLocation": "/Applications (default)",
+          "allowAnywhere": "true (allow user to choose location)",
+          "allowCurrentUserHome": "true",
+          "allowRootDirectory": "true",
+          "isRelocatable": "false (prevent relocation after install)",
+          "isVersionChecked": "true (prevent downgrade)"
+        },
+        "scripts": {
+          "preinstall": "Shell script run before installation (must be executable)",
+          "postinstall": "Shell script run after installation (must be executable)"
+        }
+      },
+      "gotchas": [
+        "PKG is NOT the default target (DMG is default)",
+        "Requires macOS to build (uses native productbuild utility)",
+        "Pre/postinstall scripts must be executable (chmod +x)",
+        "Scripts require sudo privileges for system-wide installation",
+        "Useful for enterprise deployment and Mac App Store",
+        "Can include kernel extensions (kexts) via install scripts",
+        "PKG signing identity is different from app signing identity (Developer ID Installer)"
+      ],
+      "research_sources": [
+        "Context7 MCP: /electron-userland/electron-builder",
+        "Context7 MCP: /electron/osx-sign",
+        "https://www.electron.build/configuration/pkg"
+      ]
+    }
+  ],
+  "unverified_claims": [],
+  "recommendations": [
+    "Start with DMG as the primary distribution format (it's the macOS standard for direct downloads)",
+    "Add PKG target if enterprise deployment or App Store distribution is needed",
+    "Configure code signing EARLY in development to avoid issues later",
+    "Use electron-builder.yml for configuration (cleaner than package.json)",
+    "Create entitlements.plist with minimal permissions (add only what's needed)",
+    "Set up CI/CD (GitHub Actions) for automated builds on macOS runners",
+    "For development/testing: build with --dir flag to skip packaging",
+    "Consider creating universal build (x64 + arm64) for broader macOS compatibility",
+    "Store code signing credentials in environment variables (never commit them)",
+    "Test on a clean Mac without developer tools to verify Gatekeeper acceptance",
+    "Create .icns icon from high-resolution source (1024x1024 PNG recommended)",
+    "Document the code signing setup process for team members"
+  ],
+  "current_project_status": {
+    "application_type": "Electron desktop application",
+    "tech_stack": {
+      "framework": "Electron 28.0.0",
+      "ui": "React 18.2.0 + Redux Toolkit 2.0.0",
+      "bundler": "Vite 5.0.0",
+      "language": "TypeScript 5.3.0",
+      "features": "Syntax highlighting via highlight.js 11.9.0"
+    },
+    "build_configuration_status": "NOT CONFIGURED",
+    "missing_configurations": [
+      "No electron-builder configuration (no build section in package.json)",
+      "No electron-builder.yml file",
+      "No build resources directory (build/)",
+      "No icons (.icns file for macOS)",
+      "No entitlements.plist",
+      "No code signing configuration"
+    ],
+    "next_steps_for_planning": [
+      "Create electron-builder.yml with basic configuration",
+      "Create build/ directory with resources (icons, entitlements)",
+      "Generate .icns icon from app logo/icon",
+      "Configure appId and productName",
+      "Set up basic DMG target configuration",
+      "Optionally add PKG target if needed",
+      "Document code signing requirements for future implementation"
+    ]
+  },
+  "context7_libraries_used": [
+    "/electron-userland/electron-builder",
+    "/electron/osx-sign",
+    "/websites/electronjs",
+    "/electron/electron"
+  ],
+  "created_at": "2024-12-26T18:50:00Z"
+}

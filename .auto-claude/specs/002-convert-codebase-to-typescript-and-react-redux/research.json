@@ -1,0 +1,541 @@
+{
+  "integrations_researched": [
+    {
+      "name": "TypeScript",
+      "type": "language",
+      "verified_package": {
+        "name": "typescript",
+        "install_command": "npm install --save-dev typescript",
+        "version": ">=5.0.0",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "// TypeScript is a compiler, imports not typically used directly"
+        ],
+        "initialization": "npx tsc --init",
+        "key_functions": [
+          "tsc (compiler)",
+          "tsconfig.json configuration"
+        ],
+        "verified_against": "Context7 MCP /microsoft/typescript"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [
+          "tsconfig.json",
+          "tsconfig.node.json (for build tools)",
+          "tsconfig.app.json (for application code)"
+        ],
+        "dependencies": [],
+        "typical_tsconfig": {
+          "compilerOptions": {
+            "target": "ES2020",
+            "lib": ["ES2020", "DOM", "DOM.Iterable"],
+            "module": "ESNext",
+            "moduleResolution": "bundler",
+            "jsx": "react-jsx",
+            "strict": true,
+            "esModuleInterop": true,
+            "skipLibCheck": true,
+            "allowImportingTsExtensions": true,
+            "resolveJsonModule": true,
+            "isolatedModules": true,
+            "noEmit": true,
+            "types": ["vite/client"]
+          }
+        }
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "TypeScript version must be compatible with @types/* packages",
+        "Vite requires 'isolatedModules: true' for proper module handling",
+        "For Electron projects, may need separate tsconfigs for main and renderer processes",
+        "Must include 'vite/client' in types array for HMR type definitions"
+      ],
+      "research_sources": [
+        "Context7 MCP: /microsoft/typescript",
+        "https://github.com/microsoft/typescript/wiki/Node-Target-Mapping"
+      ]
+    },
+    {
+      "name": "React",
+      "type": "library",
+      "verified_package": {
+        "name": "react",
+        "install_command": "npm install react react-dom",
+        "version": ">=18.0.0",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import React from 'react'",
+          "import { useState, useEffect, useCallback } from 'react'",
+          "import ReactDOM from 'react-dom/client'"
+        ],
+        "initialization": "const root = ReactDOM.createRoot(document.getElementById('root')); root.render(<App />)",
+        "key_functions": [
+          "useState(initialValue)",
+          "useEffect(callback, deps)",
+          "useCallback(callback, deps)",
+          "useMemo(callback, deps)",
+          "useRef(initialValue)",
+          "createContext(defaultValue)",
+          "ReactDOM.createRoot(container)"
+        ],
+        "verified_against": "Context7 MCP /websites/react_dev"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": [
+          "react-dom (required peer dependency)"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "React 18+ requires ReactDOM.createRoot() instead of ReactDOM.render()",
+        "Must use react-dom/client for modern React rendering",
+        "For TypeScript, children prop must be explicitly typed with React.ReactNode",
+        "JSX transform in modern React uses 'jsx: react-jsx' (no need to import React in every file)",
+        "Event handlers in TypeScript need explicit typing (e.g., React.ChangeEventHandler<HTMLInputElement>)"
+      ],
+      "research_sources": [
+        "Context7 MCP: /websites/react_dev",
+        "https://react.dev/learn/installation",
+        "https://react.dev/learn/typescript"
+      ]
+    },
+    {
+      "name": "React Type Definitions",
+      "type": "library",
+      "verified_package": {
+        "name": "@types/react @types/react-dom",
+        "install_command": "npm install --save-dev @types/react @types/react-dom",
+        "version": "latest",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "// Types are automatically available when installed",
+          "React.ReactNode",
+          "React.CSSProperties",
+          "React.ChangeEventHandler<T>",
+          "React.MouseEventHandler<T>",
+          "React.FC<PropsType>"
+        ],
+        "key_types": [
+          "React.ReactNode - for children props",
+          "React.CSSProperties - for inline styles",
+          "React.ChangeEventHandler<HTMLElement> - for form events",
+          "React.MouseEventHandler<HTMLElement> - for mouse events",
+          "React.FC<Props> - for functional components (though inline typing often preferred)"
+        ],
+        "verified_against": "Context7 MCP /websites/react_dev - TypeScript documentation"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [
+          "tsconfig.json must include DOM types"
+        ],
+        "dependencies": [
+          "typescript",
+          "react",
+          "react-dom"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Version should match React version (18.x types for React 18.x)",
+        "React 18 requires explicit children prop typing (not implicit)",
+        "Use React.ReactNode for children, not ReactChild or ReactChildren (deprecated)",
+        "Inline prop typing often preferred over React.FC for better type inference"
+      ],
+      "research_sources": [
+        "Context7 MCP: /websites/react_dev",
+        "https://react.dev/learn/typescript",
+        "https://react.dev/blog/2022/03/08/react-18-upgrade-guide"
+      ]
+    },
+    {
+      "name": "Redux Toolkit",
+      "type": "library",
+      "verified_package": {
+        "name": "@reduxjs/toolkit",
+        "install_command": "npm install @reduxjs/toolkit react-redux",
+        "version": ">=2.0.0",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import { configureStore } from '@reduxjs/toolkit'",
+          "import { createSlice } from '@reduxjs/toolkit'",
+          "import { createAsyncThunk } from '@reduxjs/toolkit'",
+          "import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query'"
+        ],
+        "initialization": "export const store = configureStore({ reducer: {} })",
+        "key_functions": [
+          "configureStore({ reducer })",
+          "createSlice({ name, initialState, reducers })",
+          "createAsyncThunk(typePrefix, payloadCreator)",
+          "createApi({ reducerPath, baseQuery, endpoints })"
+        ],
+        "type_patterns": [
+          "export type RootState = ReturnType<typeof store.getState>",
+          "export type AppDispatch = typeof store.dispatch"
+        ],
+        "verified_against": "Context7 MCP /reduxjs/redux-toolkit"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": [
+          "react-redux (required for React integration)"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Redux Toolkit automatically includes Redux DevTools Extension configuration",
+        "createSlice uses Immer internally, allowing 'mutative' code in reducers",
+        "Must use configureStore instead of createStore for best practices",
+        "RTK Query provides createApi for data fetching (alternative to manual async thunks)",
+        "Type inference works best when exporting RootState and AppDispatch types"
+      ],
+      "research_sources": [
+        "Context7 MCP: /reduxjs/redux-toolkit",
+        "https://github.com/reduxjs/redux-toolkit/blob/master/docs/tutorials/quick-start.mdx"
+      ]
+    },
+    {
+      "name": "React-Redux",
+      "type": "library",
+      "verified_package": {
+        "name": "react-redux",
+        "install_command": "npm install react-redux",
+        "version": ">=8.0.0",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import { Provider } from 'react-redux'",
+          "import { useSelector, useDispatch } from 'react-redux'",
+          "import { useStore } from 'react-redux'"
+        ],
+        "initialization": "<Provider store={store}><App /></Provider>",
+        "key_functions": [
+          "Provider component (wraps app)",
+          "useSelector(selector) - read state",
+          "useDispatch() - dispatch actions",
+          "useStore() - access store directly (rare)"
+        ],
+        "typescript_patterns": [
+          "const dispatch = useDispatch<AppDispatch>()",
+          "const value = useSelector((state: RootState) => state.feature)"
+        ],
+        "verified_against": "Context7 MCP /reduxjs/react-redux"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": [
+          "react >=18.0.0",
+          "@reduxjs/toolkit or redux"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Must wrap app with Provider component at root level",
+        "React 18 requires createRoot() syntax for Provider mounting",
+        "For TypeScript, create typed hooks (useAppDispatch, useAppSelector) for better DX",
+        "useSelector causes re-renders when selected state changes (use memoization if needed)",
+        "Compatible with React 18+ concurrent features"
+      ],
+      "research_sources": [
+        "Context7 MCP: /reduxjs/react-redux",
+        "https://github.com/reduxjs/react-redux/blob/master/docs/introduction/getting-started.md"
+      ]
+    },
+    {
+      "name": "Vite",
+      "type": "build_tool",
+      "verified_package": {
+        "name": "vite",
+        "install_command": "npm install --save-dev vite",
+        "version": ">=5.0.0",
+        "verified": true,
+        "note": "Already present in project package.json"
+      },
+      "api_patterns": {
+        "imports": [
+          "import { defineConfig } from 'vite'"
+        ],
+        "initialization": "defineConfig({ plugins: [...] })",
+        "key_functions": [
+          "defineConfig(config)",
+          "vite dev (start dev server)",
+          "vite build (production build)"
+        ],
+        "verified_against": "Context7 MCP /vitejs/vite"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [
+          "vite.config.js or vite.config.ts"
+        ],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Vite uses native ES modules in dev mode",
+        "HMR (Hot Module Replacement) is built-in and fast",
+        "For TypeScript, add 'vite/client' to tsconfig types array for proper HMR types",
+        "Vite's dev server uses esbuild for TypeScript transpilation (fast but no type checking)",
+        "Use tsc --noEmit for type checking in parallel with dev server"
+      ],
+      "research_sources": [
+        "Context7 MCP: /vitejs/vite",
+        "https://github.com/vitejs/vite/blob/main/docs/guide/features.md"
+      ]
+    },
+    {
+      "name": "@vitejs/plugin-react",
+      "type": "library",
+      "verified_package": {
+        "name": "@vitejs/plugin-react",
+        "install_command": "npm install --save-dev @vitejs/plugin-react",
+        "version": ">=4.0.0",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "import react from '@vitejs/plugin-react'"
+        ],
+        "initialization": "export default defineConfig({ plugins: [react()] })",
+        "key_functions": [
+          "react(options) - plugin factory"
+        ],
+        "verified_against": "Context7 MCP /vitejs/vite - React plugin documentation"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [
+          "vite.config.js or vite.config.ts"
+        ],
+        "dependencies": [
+          "vite",
+          "react"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Automatically enables React Fast Refresh (HMR)",
+        "Uses esbuild for fast JSX transformation in dev mode",
+        "For backend integration, may need React Refresh preamble script",
+        "Supports automatic JSX runtime (no React import needed in every file)"
+      ],
+      "research_sources": [
+        "Context7 MCP: /vitejs/vite",
+        "https://github.com/vitejs/vite/blob/main/docs/guide/backend-integration.md"
+      ]
+    },
+    {
+      "name": "Electron with TypeScript",
+      "type": "framework",
+      "verified_package": {
+        "name": "electron",
+        "install_command": "npm install --save-dev electron",
+        "version": ">=28.0.0",
+        "verified": true,
+        "note": "Already present in project package.json"
+      },
+      "api_patterns": {
+        "imports": [
+          "const { app, BrowserWindow } = require('electron/main')",
+          "const { contextBridge, ipcRenderer } = require('electron/preload')",
+          "// For TypeScript, use process-specific aliases for better type inference"
+        ],
+        "typescript_patterns": [
+          "// Define window API types",
+          "export interface IElectronAPI { methodName: () => Promise<void> }",
+          "declare global { interface Window { electronAPI: IElectronAPI } }"
+        ],
+        "verified_against": "Context7 MCP /websites/electronjs"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [
+          "package.json (main entry point)",
+          "separate tsconfig for main and renderer recommended"
+        ],
+        "dependencies": [
+          "@types/node for Node.js types"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Electron has type definitions built-in (no @types/electron needed)",
+        "Use 'electron/main', 'electron/renderer', 'electron/common' aliases for better types",
+        "Context isolation requires contextBridge for IPC",
+        "Must augment Window interface for TypeScript when using contextBridge",
+        "Separate build configurations needed for main process vs renderer process",
+        "Electron main process uses Node.js, renderer can use web APIs",
+        "Consider using electron-vite or vite-plugin-electron for better Vite integration"
+      ],
+      "research_sources": [
+        "Context7 MCP: /websites/electronjs",
+        "https://www.electronjs.org/docs/latest/tutorial/context-isolation",
+        "https://www.electronjs.org/docs/latest/tutorial/process-model"
+      ]
+    },
+    {
+      "name": "Node.js Type Definitions",
+      "type": "library",
+      "verified_package": {
+        "name": "@types/node",
+        "install_command": "npm install --save-dev @types/node",
+        "version": "latest",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "// Types are automatically available for Node.js globals and modules"
+        ],
+        "key_types": [
+          "NodeJS.Process",
+          "NodeJS.Timeout",
+          "Buffer",
+          "require() and module types"
+        ],
+        "verified_against": "General TypeScript ecosystem knowledge"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [
+          "tsconfig.json must reference in types array if needed"
+        ],
+        "dependencies": [
+          "typescript"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Required for Electron main process TypeScript",
+        "Version should match Node.js version used by Electron",
+        "May conflict with DOM types - use separate tsconfigs for main/renderer if needed"
+      ],
+      "research_sources": [
+        "npm: @types/node",
+        "DefinitelyTyped repository"
+      ]
+    },
+    {
+      "name": "Highlight.js (existing dependency)",
+      "type": "library",
+      "verified_package": {
+        "name": "highlight.js",
+        "install_command": "npm install highlight.js",
+        "version": ">=11.9.0",
+        "verified": true,
+        "note": "Already present in project - will need React integration pattern"
+      },
+      "api_patterns": {
+        "imports": [
+          "import hljs from 'highlight.js'",
+          "import 'highlight.js/styles/github.css'"
+        ],
+        "react_integration": [
+          "Use useEffect hook to call hljs.highlightElement()",
+          "Or use refs with hljs.highlightBlock()"
+        ],
+        "verified_against": "General library knowledge"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false
+      },
+      "gotchas": [
+        "Must manually trigger highlighting when content changes in React",
+        "Consider using react-syntax-highlighter as alternative for better React integration",
+        "Or create custom hook for highlight.js integration",
+        "Type definitions available via @types/highlight.js if needed"
+      ],
+      "research_sources": [
+        "https://highlightjs.org/",
+        "npm: highlight.js"
+      ]
+    }
+  ],
+  "unverified_claims": [],
+  "recommendations": [
+    "Use Redux Toolkit instead of plain Redux for reduced boilerplate and better DX",
+    "Create typed Redux hooks (useAppDispatch, useAppSelector) for better TypeScript experience",
+    "Consider separate tsconfig.json files for Electron main and renderer processes",
+    "Use Vite's official React plugin (@vitejs/plugin-react) for optimal HMR",
+    "Enable strict mode in TypeScript for better type safety",
+    "Consider incremental migration strategy: convert files to .tsx gradually",
+    "Set up ESLint with TypeScript and React plugins for code quality",
+    "Use React 18+ features (createRoot, concurrent features) for modern React",
+    "For Electron + Vite integration, consider using electron-vite or vite-plugin-electron packages",
+    "Create a component library structure for reusable React components",
+    "Use Redux slices to organize state by feature/domain",
+    "Consider RTK Query if app needs data fetching capabilities"
+  ],
+  "migration_strategy_notes": {
+    "current_stack": {
+      "build_tool": "Vite 5.0.0",
+      "runtime": "Electron 28.0.0 + Browser",
+      "ui": "Vanilla JavaScript + HTML",
+      "state": "Local/DOM-based",
+      "syntax_highlighting": "highlight.js 11.9.0"
+    },
+    "target_stack": {
+      "language": "TypeScript 5.x",
+      "build_tool": "Vite 5.x (keep existing)",
+      "runtime": "Electron 28.x + Browser (keep existing)",
+      "ui_framework": "React 18.x",
+      "state_management": "Redux Toolkit 2.x + React-Redux 8.x",
+      "syntax_highlighting": "highlight.js (migrate to React patterns)"
+    },
+    "key_integration_points": [
+      "Vite config must add @vitejs/plugin-react",
+      "Create tsconfig.json with appropriate compiler options",
+      "May need separate tsconfigs for main (Node.js) and renderer (DOM)",
+      "Set up Redux store with configureStore",
+      "Wrap React app with Redux Provider",
+      "Convert existing editor.js logic to React components + Redux state",
+      "Migrate file system handlers to work with React lifecycle",
+      "Integrate highlight.js with React useEffect hooks"
+    ]
+  },
+  "context7_libraries_used": [
+    "/microsoft/typescript",
+    "/websites/react_dev",
+    "/reduxjs/redux-toolkit",
+    "/reduxjs/react-redux",
+    "/vitejs/vite",
+    "/websites/electronjs"
+  ],
+  "created_at": "2024-12-26T16:30:00Z"
+}

@@ -1,0 +1,32 @@
+{
+  "project_root": "/Users/alexanderfedin/Projects/hapyy/playground/notepad",
+  "project_type": "single",
+  "services": {
+    "main": {
+      "name": "main",
+      "path": "/Users/alexanderfedin/Projects/hapyy/playground/notepad",
+      "language": "JavaScript",
+      "framework": null,
+      "type": "unknown",
+      "package_manager": "npm",
+      "build_tool": "Vite",
+      "default_port": 5173,
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "dependencies": [
+        "highlight.js"
+      ],
+      "dev_dependencies": [
+        "electron",
+        "electron-builder",
+        "vite"
+      ]
+    }
+  },
+  "infrastructure": {},
+  "conventions": {}
+}

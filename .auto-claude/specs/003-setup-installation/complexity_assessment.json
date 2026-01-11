@@ -1,0 +1,72 @@
+{
+  "complexity": "standard",
+  "workflow_type": "feature",
+  "confidence": 0.85,
+  "reasoning": "Creating electron-builder configuration for macOS packaging. electron-builder is already installed but unconfigured. Requires research for proper config options but scope is contained to build setup.",
+
+  "analysis": {
+    "scope": {
+      "estimated_files": 5,
+      "estimated_services": 1,
+      "is_cross_cutting": false,
+      "notes": "Will need to create electron-builder config file, possibly update package.json with build metadata, add icon assets, and potentially create build scripts. All contained to build configuration."
+    },
+    "integrations": {
+      "external_services": [],
+      "new_dependencies": [],
+      "research_needed": true,
+      "notes": "electron-builder is already installed as dev dependency. Need to research configuration options for macOS builds (DMG vs PKG, code signing, notarization, app metadata)."
+    },
+    "infrastructure": {
+      "docker_changes": false,
+      "database_changes": false,
+      "config_changes": true,
+      "notes": "New build configuration files (electron-builder.yml or package.json build config). May need environment variables for code signing credentials if implementing signing/notarization."
+    },
+    "knowledge": {
+      "patterns_exist": false,
+      "research_required": true,
+      "unfamiliar_tech": ["electron-builder configuration"],
+      "notes": "No existing electron-builder configuration in project. Need to research best practices for macOS packaging, code signing requirements, and notarization process. electron-builder docs are comprehensive."
+    },
+    "risk": {
+      "level": "medium",
+      "concerns": [
+        "Code signing setup complexity (requires Apple Developer account)",
+        "Notarization required for macOS Gatekeeper (distribution outside App Store)",
+        "Icon assets may not exist yet",
+        "Build configuration has many options - need to select appropriate defaults",
+        "App bundle ID and metadata need to be properly configured"
+      ],
+      "notes": "Main risk is getting code signing/notarization right for distribution. Can start with unsigned builds for testing, then add signing later."
+    }
+  },
+
+  "recommended_phases": [
+    "discovery",
+    "requirements",
+    "research",
+    "context",
+    "spec_writing",
+    "planning",
+    "validation"
+  ],
+
+  "flags": {
+    "needs_research": true,
+    "needs_self_critique": false,
+    "needs_infrastructure_setup": false
+  },
+
+  "validation_recommendations": {
+    "risk_level": "medium",
+    "skip_validation": false,
+    "minimal_mode": false,
+    "test_types_required": ["integration"],
+    "security_scan_required": true,
+    "staging_deployment_required": false,
+    "reasoning": "Build configuration requires integration testing (actually building and installing the package). Security scan needed for code signing and notarization setup to ensure credentials are handled properly. No unit tests applicable for build config."
+  },
+
+  "created_at": "2025-12-26T18:50:00Z"
+}

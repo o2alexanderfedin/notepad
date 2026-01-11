@@ -1,0 +1,4 @@
+{
+  "task_description": "Notepad with automatic syntax highlighting (whenever applicable).\nDual browser & Electron app.\nWork with FileSystemHandle-related APIs to access to files/dirs/etc.",
+  "workflow_type": "feature"
+}

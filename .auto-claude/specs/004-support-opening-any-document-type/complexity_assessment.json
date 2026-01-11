@@ -1,0 +1,69 @@
+{
+  "complexity": "standard",
+  "workflow_type": "feature",
+  "confidence": 0.85,
+  "reasoning": "Feature requires modifying file opening logic across multiple files to remove extension restrictions. Contained to single service with no external dependencies, but needs careful handling of unknown file types.",
+
+  "analysis": {
+    "scope": {
+      "estimated_files": 5,
+      "estimated_services": 1,
+      "is_cross_cutting": false,
+      "notes": "Will affect file opening handlers, type detection logic, and possibly UI components for file dialogs. Contained to document handling module."
+    },
+    "integrations": {
+      "external_services": [],
+      "new_dependencies": [],
+      "research_needed": false,
+      "notes": "Uses existing Electron file system APIs and highlight.js. No new integrations required."
+    },
+    "infrastructure": {
+      "docker_changes": false,
+      "database_changes": false,
+      "config_changes": false,
+      "notes": "Pure frontend logic changes in Electron app. No infrastructure modifications needed."
+    },
+    "knowledge": {
+      "patterns_exist": true,
+      "research_required": false,
+      "unfamiliar_tech": [],
+      "notes": "Electron file handling patterns likely exist. Standard Node.js/Electron file operations. Highlight.js already in dependencies for syntax highlighting."
+    },
+    "risk": {
+      "level": "medium",
+      "concerns": [
+        "Binary file handling could cause rendering issues",
+        "Large file performance considerations",
+        "Need graceful fallback for truly unopenable files"
+      ],
+      "notes": "Main risk is handling edge cases (binary files, very large files, encoding issues). No security concerns as files are local."
+    }
+  },
+
+  "recommended_phases": [
+    "discovery",
+    "requirements",
+    "context",
+    "spec_writing",
+    "planning",
+    "validation"
+  ],
+
+  "flags": {
+    "needs_research": false,
+    "needs_self_critique": false,
+    "needs_infrastructure_setup": false
+  },
+
+  "validation_recommendations": {
+    "risk_level": "medium",
+    "skip_validation": false,
+    "minimal_mode": false,
+    "test_types_required": ["unit", "integration"],
+    "security_scan_required": false,
+    "staging_deployment_required": false,
+    "reasoning": "File handling logic requires unit tests for type detection and integration tests for file opening. No security concerns with local files, but need to verify various file types work correctly."
+  },
+
+  "created_at": "2025-12-26T12:00:00Z"
+}
